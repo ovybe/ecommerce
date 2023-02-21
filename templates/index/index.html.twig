@@ -2,19 +2,139 @@
 
 {% block title %}Hello IndexController!{% endblock %}
 
+{% block navhome %}
+active
+{% endblock %}
+{% block bodystyle %}
+style="background-color: black"
+{% endblock %}
+
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            <ul style="list-style: none;">
+                <li class="bg-dark mb-2 p-1">
+                    <a class="text-white text-decoration-none">Categorii</a>
+                </li>
+                <li>
+                    <a class="bg-transparent text-white text-decoration-none ms-1">Placi Video</a>
+                </li>
+                <li>
+                    <a class="bg-transparent text-white text-decoration-none ms-1">Procesoare</a>
+                </li>
+                <li>
+                    <a class="bg-transparent text-white text-decoration-none ms-1">Placi de baza</a>
+                </li>
+                <li>
+                    <a class="bg-transparent text-white text-decoration-none ms-1">Memorii</a>
+                </li>
+                <li>
+                    <a class="bg-transparent text-white text-decoration-none ms-1">SSD</a>
+                </li>
+                <li>
+                    <a class="bg-transparent text-white text-decoration-none ms-1">Hard disk-uri</a>
+                </li>
+                <li>
+                    <a class="bg-transparent text-white text-decoration-none ms-1">Surse</a>
+                </li>
+                <li>
+                    <a class="bg-transparent text-white text-decoration-none ms-1">Carcase</a>
+                </li>
+                <li>
+                    <a class="bg-transparent text-white text-decoration-none ms-1">Coolere</a>
+                </li>
+                <li>
+                    <a class="bg-transparent text-white text-decoration-none ms-1">Accesorii</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-10" style="background-color: black">
+            <h4 class="text-light">Placi Video</h4>
+            {% for row in gpus|batch(4) %}
+            <div class="row bg-transparent">
+                {% for gpu in row  %}
+                <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
+                    <img src="{% if gpu.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %} {{ gpu.thumbnail }} {% endif %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ gpu.name }}</h5>
+                        <p class="card-text"><ul>
+                                <li>Interfata: {% if gpu.interface is empty %} N/A {% else %} {{ gpu.interface }} {% endif %}</li>
+                                <li>Seria: {% if gpu.series is empty %} N/A {% else %} {{ gpu.series }} {% endif %}</li>
+                                <li>GPU Boost clock: {% if gpu.clock is empty %} N/A {% else %} {{ gpu.clock }} MHz {% endif %}</li>
+                                <li>Tip memorie: {% if gpu.memory is empty %} N/A {% else %} {{ gpu.memory }} {% endif %}</li>
+                                <li>Dimensiune memorie: {% if gpu.size is empty %} N/A {% else %} {{ gpu.size }} GB {% endif %}</li>
+                        </ul></p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            <h4 class="text-light">Procesoare</h4>
+            {% for row in cpus|batch(4) %}
+            <div class="row bg-transparent">
+                {% for cpu in row  %}
+                    <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
+                        <img src="{% if cpu.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %} {{ gpu.thumbnail }} {% endif %}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ cpu.name }}</h5>
+                            <p class="card-text"><ul>
+                                <li>Socket: {% if cpu.socket is empty %} N/A {% else %} {{ cpu.socket }} {% endif %}</li>
+                                <li>Seria: {% if cpu.series is empty %} N/A {% else %}{{ cpu.series }} {% endif %}</li>
+                                <li>Nucleu: {% if cpu.core is empty %} N/A {% else %} {{ cpu.core }} {% endif %}</li>
+                                <li>Frecventa: {% if cpu.frequency is empty %} N/A {% else %} {{ cpu.frequency }} GHz {% endif %}</li>
+                            </ul></p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            <h4 class="text-light">Placi de Baza</h4>
+            {% for row in mbs|batch(4) %}
+                <div class="row bg-transparent">
+                    {% for mb in row  %}
+                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
+                            <img src="{% if mb.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %} {{ gpu.thumbnail }} {% endif %}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ mb.name }}</h5>
+                                <p class="card-text"><ul>
+                                    <li>Format: {% if mb.format is empty %} N/A {% else %} {{ mb.format }} {% endif %}</li>
+                                    <li>Soclu procesor: {% if mb.cpusocket is empty %} N/A {% else %} {{ mb.cpusocket }} {% endif %}</li>
+                                    <li>Producator chipset: {% if mb.chipset is empty %} N/A {% else %} {{ mb.chipset }} {% endif %}</li>
+                                    <li>Model chipset: {% if mb.modelchipset is empty %} N/A {% else %} {{ mb.modelchipset }} {% endif %}</li>
+                                    <li>Interfata grafica: {% if mb.interface is empty %} N/A {% else %} {{ mb.interface }} {% endif %}</li>
+                                    <li>Tip Memorie: {% if mb.memory is empty %} N/A {% else %} {{ mb.memory }} {% endif %}</li>
+                                    <li>Tehnologie: {% if mb.tech is empty %} N/A {% else %} {{ mb.tech }} {% endif %}</li>
+                                </ul></p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <h4 class="text-light">Memorii</h4>
+            {% for row in mems|batch(4) %}
+                <div class="row bg-transparent">
+                    {% for mem in row  %}
+                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
+                            <img src="{% if mem.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %} {{ gpu.thumbnail }} {% endif %}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ mem.name }}</h5>
+                                <p class="card-text"><ul>
+                                    <li>Tip: {% if mem.memtype is empty %} N/A {% else %} {{ mem.memtype }} {% endif %}</li>
+                                    <li>Capacitate: {% if mem.capacity is empty %} N/A {% else %} {{ mem.capacity }} GB {% endif %}</li>
+                                    <li>Frecventa: {% if mem.frequency is empty %} N/A {% else %} {{ mem.frequency }} MHz {% endif %}</li>
+                                    <li>Latenta CAS: {% if mem.latency is empty %} N/A {% else %} {{ mem.latency }} CL {% endif %}</li>
+                                </ul></p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<div class="container" >
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/lemaw/PhpstormProjects/ecommerce_store_bachelors/ecommerce_store/src/Controller/IndexController.php'|file_link(0) }}">src/Controller/IndexController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/lemaw/PhpstormProjects/ecommerce_store_bachelors/ecommerce_store/templates/index/index.html.twig'|file_link(0) }}">templates/index/index.html.twig</a></code></li>
-    </ul>
 </div>
 {% endblock %}

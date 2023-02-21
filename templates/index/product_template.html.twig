@@ -1,0 +1,70 @@
+{# GPU #}
+<div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
+    <img src="{{ thumbnail }}" class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">{{ title }}</h5>
+        <p class="card-text"><ul>
+            {% block raminfo %}
+                <li>Tip:{{ type }}</li>
+                <li>Capacitate: {{ size }} GB</li>
+                <li>Frecventa: {{ frequency }} MHz</li>
+                <li>Latenta CAS: {{ latency }} CL</li>
+            {% endblock %}
+            {% block gpuinfo %}
+                <li>Interfata: {{ interface }}</li>
+                <li>Seria: {{ series }}</li>
+                <li>GPU Boost clock: {{ clock }} MHz</li>
+                <li>Tip memorie: {{ memtype }}</li>
+                <li>Dimensiune memorie: {{ memsize }} GB</li>
+            {% endblock %}
+            {% block cpuinfo %}
+                <li>Socket: {{ socket }}</li>
+                <li>Seria: {{ series }}</li>
+                <li>Nucleu: {{ core }}</li>
+                <li>Frecventa: {{ frequency }} GHz</li>
+            {% endblock %}
+            {% block mbinfo %}
+                <li>Format: {{ format }}</li>
+                <li>Soclu procesor: {{ socket }}</li>
+                <li>Producator chipset: {{ prodchipset }}</li>
+                <li>Model chipset: {{ modelchipset }}</li>
+                <li>Interfata grafica: {{ interface }}</li>
+                <li>Tip Memorie: {{ memtype }}</li>
+                <li>Tehnologie: {{ tech }}</li>
+            {% endblock %}
+            {% block ssdinfo %}
+                <li>Seria: {{ series }}</li>
+                <li>Interfata: {{ interface }}</li>
+                <li>Capacitate: {{ size}} TB</li>
+                <li>Citire max.: {{ maxread }} MB/s</li>
+            {% endblock %}
+            {% block hddinfo %}
+                <li>Seria: {{ series }}</li>
+                <li>Interfata: {{ interface }}</li>
+                <li>Capacitate: {{ size }} TB</li>
+                <li>Buffer: {{ buffer }} MB</li>
+                <li>Viteza: {{ maxread }} RPM</li>
+            {% endblock %}
+            {% psuinfo %}
+            <li>Putere: {{ power }} W</li>
+            <li>Numar ventilatoare: {% for vent in vents %} {{ vent }} {% endfor %}</li>
+            <li>PFC: {{ pfc }}</li>
+            <li>Eficienta: {{ efficiency }}</li>
+            <li>Certificare: {{ certification }}</li>
+            {% endblock %}
+            {% caseinfo %}
+            <li>Tip: {{ casetype }}</li>
+            <li>Dimensiuni (H x D x W): {{ height }} x {{ size }} x {{ width }} mm</li>
+            <li>Sloturi expansiune: x{{ slotnum }}</li>
+            {% endblock %}
+            {% coolerinfo %}
+            <li>Tip: {{ type }}</li>
+            <li>Racire: {{ cooling }}</li>
+            <li>Inaltime: {{ height }} mm</li>
+            <li>Numar Ventilatoare: {{ ventcount }}</li>
+            <li>Dimensiune ventilator: {{ ventsize }} mm</li>
+            {% endblock %}
+        </ul></p>
+    </div>
+    <a href="{{ product_link }}" class="btn btn-success align-self-center mb-2">Adauga in cos</a>
+</div>
