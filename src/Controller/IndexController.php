@@ -25,16 +25,41 @@ class IndexController extends AbstractController
     public function index(ManagerRegistry $doctrine): Response
     {
         $entityManager = $doctrine->getManager();
+       $products=$entityManager->getRepository(Product::class)->getNByType(12);
+       $gpus=array();$cpus=array();$mems=array();$mbs=array();$cases=array();$psus=array();$ssds=array();$hdds=array();$coolers=array();
+        foreach($products as $p)
+        {
+            switch($p['type']){
+                case 'GPU':
+                    $gpus[]=$p;
+                    break;
+                case 'CPU':
+                    $cpus[]=$p;
+                    break;
+                case 'Motherboard':
+                    $mbs[]=$p;
+                    break;
+                case 'Memory':
+                    $mems[]=$p;
+                    break;
+                case 'Cooler':
+                    $coolers[]=$p;
+                    break;
+                case 'SSD':
+                    $ssds[]=$p;
+                    break;
+                case 'HDD':
+                    $hdds[]=$p;
+                    break;
+                case 'Case':
+                    $cases[]=$p;
+                    break;
+                case 'PSU':
+                    $psus[]=$p;
+                    break;
+            }
+        }
 
-        $gpus=$entityManager->getRepository(Gpu::class)->findBy(array(),array("name" => 'ASC'),12);
-        $cpus=$entityManager->getRepository(Cpu::class)->findBy(array(),array("name" => 'ASC'),12);
-        $mems=$entityManager->getRepository(Memory::class)->findBy(array(),array("name" => 'ASC'),12);
-        $mbs=$entityManager->getRepository(Motherboard::class)->findBy(array(),array("name" => 'ASC'),12);
-        $cases=$entityManager->getRepository(PCCase::class)->findBy(array(),array("name" => 'ASC'),12);
-        $psus=$entityManager->getRepository(Psu::class)->findBy(array(),array("name" => 'ASC'),12);
-        $ssds=$entityManager->getRepository(Ssd::class)->findBy(array(),array("name" => 'ASC'),12);
-        $hdds=$entityManager->getRepository(Ssd::class)->findBy(array(),array("name" => 'ASC'),12);
-        $coolers=$entityManager->getRepository(Cooler::class)->findBy(array(),array("name" => 'ASC'),12);
 
         return $this->render('index/index.html.twig', [
             'controller_name' => 'Index Page',
@@ -47,6 +72,18 @@ class IndexController extends AbstractController
             'ssds' => $ssds,
             'hdds' => $hdds,
             'coolers' => $coolers,
+        ]);
+    }
+    #[Route('/product/{id}', name: 'app_product')]
+    public function product_view(ManagerRegistry $doctrine, int $id): Response
+    {
+        $entityManager = $doctrine->getManager();
+
+        $product=$entityManager->getRepository(Product::class)->findOneBy(array('id'=>$id));
+
+        return $this->render('products/productpage.html.twig', [
+            'controller_name' => 'Product Page',
+            'product' => $product
         ]);
     }
 }

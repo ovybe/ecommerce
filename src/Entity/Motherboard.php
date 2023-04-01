@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\MotherboardRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MotherboardRepository::class)]
 class Motherboard extends Product
@@ -13,6 +14,8 @@ class Motherboard extends Product
     private ?string $format = null;
 
     #[ORM\Column(length: 5)]
+//    #[Assert\Valid]
+    #[Assert\NotNull(groups: ['need_validation'])]
     private ?string $cpusocket = null;
 
     #[ORM\Column(length: 10, nullable: true)]

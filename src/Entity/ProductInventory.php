@@ -22,6 +22,14 @@ class ProductInventory
     #[ORM\Column]
     private ?\DateTimeImmutable $modifiedAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'productInventories')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Product $product = null;
+
+    #[ORM\ManyToOne(inversedBy: 'productInventories')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Locations $location = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +67,30 @@ class ProductInventory
     public function setModifiedAt(\DateTimeImmutable $modifiedAt): self
     {
         $this->modifiedAt = $modifiedAt;
+
+        return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(Product $product): self
+    {
+        $this->product = $product;
+
+        return $this;
+    }
+
+    public function getLocation(): ?Locations
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Locations $location): self
+    {
+        $this->location = $location;
 
         return $this;
     }

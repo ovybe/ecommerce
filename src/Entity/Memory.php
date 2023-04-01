@@ -14,9 +14,13 @@ class Memory extends Product
     private ?string $memtype = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(groups: ['need_validation'])]
+    #[Assert\Positive(groups: ['need_validation'])]
     private ?int $capacity = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(groups: ['need_validation'])]
+    #[Assert\Positive(groups: ['need_validation'])]
     private ?int $frequency = null;
 
     #[ORM\Column(nullable: true)]

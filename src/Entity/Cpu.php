@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\CpuRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,6 +20,7 @@ class Cpu extends Product
     private ?string $core = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero(groups: ['need_validation'])]
     private ?float $frequency = null;
 
 

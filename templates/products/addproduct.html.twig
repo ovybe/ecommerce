@@ -1,25 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AddProductController!{% endblock %}
+{% block title %}Add Product{% endblock %}
 
 {% block bodystyle %}
     style="background-color: black"
 {% endblock %}
 
+{% block javascripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.standalone.min.css" integrity="sha512-TQQ3J4WkE/rwojNFo6OJdyu6G8Xe9z8rMrlF9y7xpFbQfW5g8aSWcygCQ4vqRiJqFsDsE1T6MoAOMJkFXlrI9A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {#    {{ encore_entry_script_tags('app') }}#}
+{% endblock %}
+
 {% block body %}
-    <div class="container">
-        <form class="row">
-            <h4 class="text-white ms-5 ps-5">Add Product</h4>
+        {{ form_start(form) }}
+    <div class="d-flex">
+        <div class="col-1"></div>
+    <h4 class="text-white col-11 ps-5">Add Product</h4>
+    </div>
+    <div class="container d-flex">
+
+
 
             <div class="col-6 ms-5 container-fluid bg-light p-5 pt-4 me-0 rounded">
+                <div class="errors">
+                    {{ form_errors(form) }}
+{#                    {% for error in errors %}#}
+{#                    <li>{{ error.message }}</li>#}
+{#                    {% endfor %}#}
+                </div>
+                    <div class="row input-group mb-3 ms-1">
 
-                    <div class="row input-group mb-3">
-                        <label for="title">Titlu</label>
-                        <input class="rounded" name="title" placeholder="Titlul produsului..." type="text">
+                        {{ form_label(form.product.name) }}
+                        {{ form_errors(form.product.name) }}
+                        {{ form_widget(form.product.name) }}
                     </div>
-                    <div class="row input-group mb-3">
-                        <label for="description">Descriere</label>
-                        <input name="description" placeholder="Descriere produs..." type="hidden">
+                    <div class="row input-group mb-3 ms-1">
+                        {{ form_label(form.product.description) }}
+                        {{ form_errors(form.product.description) }}
+                        {{ form_widget(form.product.description) }}
                         <div class="rounded-bottom bg-white" id="editor">
                             <p>Hello World!</p>
                             <p>Some initial <strong>bold</strong> text</p>
@@ -27,45 +47,290 @@
                         </div>
                     </div>
                     <div class="row input-group mb-3">
-                        <label for="img_thumbnail">Thumbnail</label>
-                        <input type="file" id="img_thumbnail" name="img_thumbnail" accept="image/*">
+                        {{ form_label(form.product.thumbnail) }}
+                        {{ form_errors(form.product.thumbnail) }}
+                        {{ form_widget(form.product.thumbnail) }}
                     </div>
+                <div class="row input-group mb-3">
+                    {{ form_label(form.product.productImages) }}
+                    {{ form_errors(form.product.productImages) }}
+                    {{ form_widget(form.product.productImages) }}
+                </div>
                     <div class="row input-group mb-3">
                         <label for="img_showcase">Showcase</label>
                         <input type="file" id="img_showcase" name="img_showcase" accept="image/*">
                     </div>
                     <div class="row input-group mb-3">
                         <div class="row">
-                        <label class="col-6" for="price">Pret</label>
-                        <label class="col-6" for="code">Cod</label>
+                            {{ form_errors(form.product.price) }}
+                            {{ form_errors(form.product.SKU) }}
                         </div>
-                        <input class="rounded col-5" name="price" placeholder="Introduceti un pret (RON)" type="text">
-                        <input class="rounded col-6 ms-5" name="code" placeholder="Introduceti codul produsului..." type="text">
+                        <div class="row">
+                            {{ form_label(form.product.price) }}
+                            {{ form_label(form.product.SKU) }}
+                        </div>
+                        <div class="row">
+                        {{ form_widget(form.product.price) }}
+                        {{ form_widget(form.product.SKU) }}
+                        </div>
                     </div>
-                    <div class="row input-group">
-                        <label for="category">Categorie</label>
-                        <select class="form-select rounded" id="category" name="category">
-                            <option selected disabled>Alege categoria produsului</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
 
+                    <div class="row input-group mb-3 ms-1">
+                        <label for="category">Categorie</label>
+                        {{ form_errors(form.product.type) }}
+                        {{ form_widget(form.product.type) }}
+                    </div>
+                    <div class="row" id="formdiv">
+                        <div id="Gpu" name="Gpu" class="ms-3" style="display:none;">
+                            <div class="row input-group mb-3">
+                                {{ form_errors(form.gpu.interface) }}
+                                {{ form_label(form.gpu.interface) }}
+                                {{ form_widget(form.gpu.interface) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                {{ form_errors(form.gpu.clock) }}
+                                {{ form_label(form.gpu.clock) }}
+                                {{ form_widget(form.gpu.clock) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="memory">Memory Type</label>
+                                {{ form_errors(form.gpu.memory) }}
+                                {{ form_widget(form.gpu.memory) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="size">Memory Size (GB)</label>
+                                {{ form_errors(form.gpu.size) }}
+                                {{ form_widget(form.gpu.size) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="release">Release Date</label>
+                                {{ form_errors(form.gpu.releasedate) }}
+                                {{ form_widget(form.gpu.releasedate) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="series">Series</label>
+                                {{ form_errors(form.gpu.series) }}
+                                {{ form_widget(form.gpu.series) }}
+                            </div>
+                        </div>
+                        <div id="Cpu" name="Cpu" class="ms-3" style="display:none;">
+                            <div class="row input-group mb-3">
+                                <label for="socket">Socket</label>
+                                {{ form_errors(form.cpu.socket) }}
+                                {{ form_widget(form.cpu.socket) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="cpuseries">Series</label>
+                                {{ form_errors(form.cpu.series) }}
+                                {{ form_widget(form.cpu.series) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="cpucore">Core</label>
+                                {{ form_errors(form.cpu.core) }}
+                                {{ form_widget(form.cpu.core) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="frequency">Frequency (GHz)</label>
+                                {{ form_errors(form.cpu.frequency) }}
+                                {{ form_widget(form.cpu.frequency) }}
+                            </div>
+                        </div>
+                        <div id="Motherboard" name="Motherboard" class="ms-3" style="display:none">
+                            <div class="row input-group mb-3">
+                                <label for="format">Format</label>
+                                {{ form_errors(form.motherboard.format) }}
+                                {{ form_widget(form.motherboard.format) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="cpusocket">CPU Socket</label>
+                                {{ form_errors(form.motherboard.cpusocket) }}
+                                {{ form_widget(form.motherboard.cpusocket) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="chipset">Chipset Producer</label>
+                                {{ form_errors(form.motherboard.chipset) }}
+                                {{ form_widget(form.motherboard.chipset) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="modelchipset">Chipset Model</label>
+                                {{ form_errors(form.motherboard.modelchipset) }}
+                                {{ form_widget(form.motherboard.modelchipset) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="interface">Graphics Interface</label>
+                                {{ form_errors(form.motherboard.interface) }}
+                                {{ form_widget(form.motherboard.interface) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="memory">Memory Type</label>
+                                {{ form_errors(form.motherboard.memory) }}
+                                {{ form_widget(form.motherboard.memory) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="tech">Technology</label>
+                                {{ form_errors(form.motherboard.tech) }}
+                                {{ form_widget(form.motherboard.tech) }}
+                            </div>
+                        </div>
+                        <div id="Memory" name="Memory" class="ms-3" style="display:none;">
+                            <div class="row input-group mb-3">
+                                <label for="memtype">Memory Type</label>
+                                {{ form_errors(form.memory.memtype) }}
+                                {{ form_widget(form.memory.memtype) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="memcap">Capacity (GB)</label>
+                                {{ form_errors(form.memory.capacity) }}
+                                {{ form_widget(form.memory.capacity) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="memfreq">Frequency (MHz)</label>
+                                {{ form_errors(form.memory.frequency) }}
+                                {{ form_widget(form.memory.frequency) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="latency">CAS Latency (CL)</label>
+                                {{ form_errors(form.memory.latency) }}
+                                {{ form_widget(form.memory.latency) }}
+                            </div>
+                        </div>
+                        <div id="Ssd" name="Ssd" class="ms-3" style="display:none;">
+                            <div class="row input-group mb-3">
+                                <label for="ssdseries">Series</label>
+                                {{ form_errors(form.ssd.series) }}
+                                {{ form_widget(form.ssd.series) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="ssdinterface">Interface</label>
+                                {{ form_errors(form.ssd.interface) }}
+                                {{ form_widget(form.ssd.interface) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="ssdcap">Capacity (GB)</label>
+                                {{ form_errors(form.ssd.capacity) }}
+                                {{ form_widget(form.ssd.capacity) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="maxreading">Max Reading Speed</label>
+                                {{ form_errors(form.ssd.maxreading) }}
+                                {{ form_widget(form.ssd.maxreading) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="maxreading">Drive Type</label>
+                                {{ form_errors(form.ssd.drivetype) }}
+                                {{ form_widget(form.ssd.drivetype) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="buffer">Buffer</label>
+                                {{ form_errors(form.ssd.buffer) }}
+                                {{ form_widget(form.ssd.buffer) }}
+                            </div>
+                        </div>
+                        <div id="Psu" name="Psu" class="ms-3" style="display:none;">
+                            <div class="row input-group mb-3">
+                                <label for="power">Power</label>
+                                {{ form_errors(form.psu.power) }}
+                                {{ form_widget(form.psu.power) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="pfc">PFC</label>
+                                {{ form_errors(form.psu.pfc) }}
+                                {{ form_widget(form.psu.pfc) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="efficiency">Efficiency (%)</label>
+                                {{ form_errors(form.psu.efficiency) }}
+                                {{ form_widget(form.psu.efficiency) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="certification">Certification</label>
+                                {{ form_errors(form.psu.certification) }}
+                                {{ form_widget(form.psu.certification) }}
+                            </div>
+
+                            <div class="row input-group mb-3">
+                                <label for="certification">Vents</label>
+                                {{ form_errors(form.psu.vents) }}
+                                <table class="vents table table-hover"
+                                    data-index="{{ form.psu.vents|length > 0 ? form.psu.vents|last.vars.name + 1 : 0 }}"
+                                    data-prototype="<td>{{ form_widget(form.psu.vents.vars.prototype.type)|e('html_attr')}}</td><td>
+                                    {{ form_widget(form.psu.vents.vars.prototype.count)|e('html_attr') }}</td>"
+                                ><thead><tr><td>Name</td><td>Count</td></tr></thead><tbody></tbody></table>
+                                {{ form_widget(form.psu.vents) }}
+                                <button type="button" class="add_item_link" data-collection-holder-class="vents">Add a vent</button>
+                            </div>
+
+
+                        </div>
+                        <div id="Cooler" name="Cooler" class="ms-3" style="display:none;">
+                            <div class="row input-group mb-3">
+                                <label for="ctype">Cooling Type</label>
+                                {{ form_errors(form.cooler.ctype) }}
+                                {{ form_widget(form.cooler.ctype) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="cooling">Cooling</label>
+                                {{ form_errors(form.cooler.cooling) }}
+                                {{ form_widget(form.cooler.cooling) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="height">Height (mm)</label>
+                                {{ form_errors(form.cooler.height) }}
+                                {{ form_widget(form.cooler.height) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="ventsize">Size (mm)</label>
+                                {{ form_errors(form.cooler.size) }}
+                                {{ form_widget(form.cooler.size) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="vents">Vents</label>
+                                {{ form_errors(form.cooler.vents) }}
+                                {{ form_widget(form.cooler.vents) }}
+                            </div>
+                        </div>
+                        <div id="Case" name="Case" class="ms-3" style="display:none;">
+                            <div class="row input-group mb-3">
+                                <label for="casetype">Case Type</label>
+                                {{ form_errors(form.case.casetype) }}
+                                {{ form_widget(form.case.casetype) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="height">Height (mm)</label>
+                                {{ form_errors(form.case.height) }}
+                                {{ form_widget(form.case.height) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="diameter">Diameter (mm)</label>
+                                {{ form_errors(form.case.diameter) }}
+                                {{ form_widget(form.case.diameter) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="width">Width (mm)</label>
+                                {{ form_errors(form.case.width) }}
+                                {{ form_widget(form.case.width) }}
+                            </div>
+                            <div class="row input-group mb-3">
+                                <label for="slots">Slots</label>
+                                {{ form_errors(form.case.slots) }}
+                                {{ form_widget(form.case.slots) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row col-3 mx-auto">
+                        {{ form_widget(form.submit) }}
                     </div>
             </div>
-            <div class="col-3 container-fluid ms-5 bg-light p-5 pt-4 rounded">
+            <div class="col-4 container-fluid ms-5 bg-light p-5 pt-4 rounded">
                 <div class="row input-group border-bottom">
                 <label for="status">Status Produs</label>
-                <select class="form-select rounded" id="status" name="status">
-                    <option selected value="1">Draft</option>
-                    <option value="2">On Sale</option>
-                    <option value="3">Sold Out</option>
-                </select>
-                <p class="form-text">Produsul va fi ascuns din lista de produse disponibile.</p>
+                    {{ form_errors(form.product.status) }}
+                    {{ form_widget(form.product.status) }}
                 </div>
                 <div class="row input-group pb-3 border-bottom">
                     <label for="seller">Vanzator</label>
-                    <input class="rounded" placeholder="e.g. ASUS" name="seller" type="text">
+                    {{ form_errors(form.product.seller) }}
+                    {{ form_widget(form.product.seller) }}
                 </div>
                 <div class="row input-group border-bottom mt-2">
                     <label for="seller">Etichete</label>
@@ -73,31 +338,33 @@
                     <p class="form-text">Adauga o eticheta din cele deja existente la produs pentru a fi mai usor de gasit.</p>
                 </div>
                 <div class="row input-group mt-2">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th scope="col">Locatie</th>
-                            <th scope="col">Cantitate</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <th scope="row">Arad - Micalaca</th>
-                            <td class="text-center"> 5 </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Arad - Bou Rosu</th>
-                            <td class="text-center"> 0 </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Timisoara - Iulius Town</th>
-                            <td class="text-center"> 3 </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                                        {{ form_errors(form.product.productInventories) }}
+                                        <table id="locationtable" class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Locatie</th>
+                                                <th scope="col">Cantitate</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            {% for productInventory in form.product.productInventories %}
+                                                <tr>
+                                                <td>
+                                                <label>{{ productInventory.vars.data.location.name }}</label>
+                                                </td>
+                                                <td>
+                                                    {{ form_widget(productInventory) }}
+                                                </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
                 </div>
             </div>
-        </form>
     </div>
-
+    {{ form_end(form) }}
+{% endblock %}
+{% block javascriptsend %}
+    <script src="/js/addproduct.js"></script>
 {% endblock %}

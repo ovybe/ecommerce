@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AddProductController!{% endblock %}
+
+{% block bodystyle %}
+style="background-color: black"
+{% endblock %}
+
+{% block javascripts %}
+{#    {{ encore_entry_script_tags('app') }}#}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+        <h4 class="text-white ms-5 ps-5">Add Product</h4>
+
+        <div class="col-6 ms-5 container-fluid bg-light p-5 pt-4 me-0 rounded">
+            <div class="row input-group mb-3 me-0 ms-1">
+                <label for="types">Product Types</label>
+                <select class="rounded" id="types">
+                    <option value="0" disabled selected>Select a type!</option>
+                    {% for type in types|keys %}
+                        <option value="product_type_{{ loop.index }}">{{ type }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% for form in forms%}
+                <div id="product_type_{{ loop.index }}" class="form-group justify-content-center" style="display:none;" id="product_type_{{ loop.index }}">
+                    {{ form_start(form) }}
+                        {% for child in form.children|keys %}
+                            <div class="row input-group mb-3 ms-1">
+                                {{ form_label(attribute(form.children,child)) }}
+                                {{ form_widget(attribute(form.children,child),{ 'attr': {'class': 'rounded'} }) }}
+                                {% if child == 'description' %}
+                                    <div class="rounded-bottom bg-white me-0" id="editor">
+                                        <p>Hello World!</p>
+                                        <p>Some initial <strong>bold</strong> text</p>
+                                        <p><br></p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {{ form_end(form) }}
+                </div>
+            {% endfor %}
+        </div>
+</div>
+{% endblock %}
+{% block javascriptsend %}
+    <script src="/js/addproduct.js"></script>
+{% endblock %}

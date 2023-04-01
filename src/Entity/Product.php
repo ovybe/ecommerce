@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
@@ -38,6 +41,31 @@ class Product
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $created_at = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $price = null;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductImages::class)]
+    private Collection $productImages;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $status = null;
+
+    #[ORM\ManyToMany(targetEntity: Locations::class, inversedBy: 'products')]
+    private Collection $locations;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductInventory::class)]
+    private Collection $productInventories;
+
+    #[ORM\Column(type: Types::GUID)]
+    private ?string $uid = null;
+
+    public function __construct()
+    {
+        $this->productImages = new ArrayCollection();
+        $this->locations = new ArrayCollection();
+        $this->productInventories = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,7 +88,7 @@ class Product
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 
@@ -123,6 +151,135 @@ class Product
     public function setCreatedAt(?\DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?float $price): self
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductImages>
+     */
+    public function getProductImages(): Collection
+    {
+        return $this->productImages;
+    }
+
+    public function addProductImage(ProductImages $productImage): self
+    {
+        if (!$this->productImages->contains($productImage)) {
+            $this->productImages->add($productImage);
+            $productImage->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductImage(ProductImages $productImage): self
+    {
+        if ($this->productImages->removeElement($productImage)) {
+            // set the owning side to null (unless already changed)
+            if ($productImage->getProduct() === $this) {
+                $productImage->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Locations>
+     */
+    public function getLocations(): Collection
+    {
+        return $this->locations;
+    }
+
+    public function addLocation(Locations $location): self
+    {
+        if (!$this->locations->contains($location)) {
+            $this->locations->add($location);
+        }
+
+        return $this;
+    }
+
+    public function removeLocation(Locations $location): self
+    {
+        $this->locations->removeElement($location);
+
+        return $this;
+    }
+    /**
+     * @return Collection<int, ProductInventory>
+     */
+    public function getProductInventories(): Collection
+    {
+        return $this->productInventories;
+    }
+
+    public function addProductInventory(ProductInventory $productInventory): self
+    {
+        if (!$this->productInventories->contains($productInventory)) {
+            $this->productInventories->add($productInventory);
+            $productInventory->setProduct($this);
+        }
+
+        return $this;
+    }
+    public function setProductInventories(Collection $productInventories): self
+    {
+        $this->productInventories = $productInventories;
+        return $this;
+    }
+    public function setProductImages(Collection $productImages): self
+    {
+        $this->productImages = $productImages;
+        return $this;
+    }
+
+    public function removeProductInventory(ProductInventory $productInventory): self
+    {
+        if ($this->productInventories->removeElement($productInventory)) {
+            // set the owning side to null (unless already changed)
+            if ($productInventory->getProduct() === $this) {
+                $productInventory->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUid(): ?string
+    {
+        return $this->uid;
+    }
+
+    public function setUid(string $uid): self
+    {
+        $this->uid = $uid;
 
         return $this;
     }

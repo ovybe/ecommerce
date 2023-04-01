@@ -13,7 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Memory|null findOneBy(array $criteria, array $orderBy = null)
  * @method Memory[]    findAll()
  * @method Memory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- * @method Memory[]    findAllByValue($value = null)
+ * @method Memory[]    getNByType($number = 5)
  */
 class MemoryRepository extends BaseProductRepository
 {

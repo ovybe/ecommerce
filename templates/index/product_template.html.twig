@@ -1,70 +1,70 @@
 {# GPU #}
-<div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-    <img src="{{ thumbnail }}" class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title">{{ title }}</h5>
-        <p class="card-text"><ul>
+{#<div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">#}
+{#    <img src="{{ product.thumbnail }}" class="card-img-top" alt="...">#}
+{#    <div class="card-body">#}
+{#        <h5 class="card-title">{{ product.title }}</h5>#}
+{#        <p class="card-text"><ul>#}
             {% block raminfo %}
-                <li>Tip:{{ type }}</li>
-                <li>Capacitate: {{ size }} GB</li>
-                <li>Frecventa: {{ frequency }} MHz</li>
-                <li>Latenta CAS: {{ latency }} CL</li>
+                <li>Tip:{{ product.type }}</li>
+                <li>Capacitate: {{ product.size }} GB</li>
+                <li>Frecventa: {{ product.frequency }} MHz</li>
+                <li>Latenta CAS: {{ product.latency }} CL</li>
             {% endblock %}
             {% block gpuinfo %}
-                <li>Interfata: {{ interface }}</li>
-                <li>Seria: {{ series }}</li>
-                <li>GPU Boost clock: {{ clock }} MHz</li>
-                <li>Tip memorie: {{ memtype }}</li>
-                <li>Dimensiune memorie: {{ memsize }} GB</li>
+                <li>Interfata: {{ product.interface }}</li>
+                <li>Seria: {{ product.series }}</li>
+                <li>GPU Boost clock: {{ product.clock }} MHz</li>
+                <li>Tip memorie: {{ product.memory }}</li>
+                <li>Dimensiune memorie: {{ product.size }} GB</li>
             {% endblock %}
             {% block cpuinfo %}
-                <li>Socket: {{ socket }}</li>
-                <li>Seria: {{ series }}</li>
-                <li>Nucleu: {{ core }}</li>
-                <li>Frecventa: {{ frequency }} GHz</li>
+                <li>Socket: {{ product.socket }}</li>
+                <li>Seria: {{ product.series }}</li>
+                <li>Nucleu: {{ product.core }}</li>
+                <li>Frecventa: {{ product.frequency }} GHz</li>
             {% endblock %}
             {% block mbinfo %}
-                <li>Format: {{ format }}</li>
-                <li>Soclu procesor: {{ socket }}</li>
-                <li>Producator chipset: {{ prodchipset }}</li>
-                <li>Model chipset: {{ modelchipset }}</li>
-                <li>Interfata grafica: {{ interface }}</li>
-                <li>Tip Memorie: {{ memtype }}</li>
-                <li>Tehnologie: {{ tech }}</li>
+                <li>Format: {{ product.format }}</li>
+                <li>Soclu procesor: {{ product.socket }}</li>
+                <li>Producator chipset: {{ product.prodchipset }}</li>
+                <li>Model chipset: {{ product.modelchipset }}</li>
+                <li>Interfata grafica: {{ product.interface }}</li>
+                <li>Tip Memorie: {{ product.memtype }}</li>
+                <li>Tehnologie: {{ product.tech }}</li>
             {% endblock %}
             {% block ssdinfo %}
-                <li>Seria: {{ series }}</li>
-                <li>Interfata: {{ interface }}</li>
-                <li>Capacitate: {{ size}} TB</li>
-                <li>Citire max.: {{ maxread }} MB/s</li>
+                <li>Seria: {{ product.series }}</li>
+                <li>Interfata: {{ product.interface }}</li>
+                <li>Capacitate: {{ product.size}} TB</li>
+                <li>Citire max.: {{ product.maxread }} MB/s</li>
             {% endblock %}
             {% block hddinfo %}
-                <li>Seria: {{ series }}</li>
-                <li>Interfata: {{ interface }}</li>
-                <li>Capacitate: {{ size }} TB</li>
-                <li>Buffer: {{ buffer }} MB</li>
-                <li>Viteza: {{ maxread }} RPM</li>
+                <li>Seria: {{ product.series }}</li>
+                <li>Interfata: {{ product.interface }}</li>
+                <li>Capacitate: {{ product.size }} TB</li>
+                <li>Buffer: {{ product.buffer }} MB</li>
+                <li>Viteza: {{ product.maxread }} RPM</li>
             {% endblock %}
-            {% psuinfo %}
-            <li>Putere: {{ power }} W</li>
-            <li>Numar ventilatoare: {% for vent in vents %} {{ vent }} {% endfor %}</li>
-            <li>PFC: {{ pfc }}</li>
-            <li>Eficienta: {{ efficiency }}</li>
-            <li>Certificare: {{ certification }}</li>
+            {% block psuinfo %}
+            <li>Putere: {{ product.power }} W</li>
+            <li>Numar ventilatoare: {% for vent in vents %} {{ product.vent }} {% endfor %}</li>
+            <li>PFC: {{ product.pfc }}</li>
+            <li>Eficienta: {{ product.efficiency }}</li>
+            <li>Certificare: {{ product.certification }}</li>
             {% endblock %}
-            {% caseinfo %}
-            <li>Tip: {{ casetype }}</li>
-            <li>Dimensiuni (H x D x W): {{ height }} x {{ size }} x {{ width }} mm</li>
-            <li>Sloturi expansiune: x{{ slotnum }}</li>
+            {% block caseinfo %}
+            <li>Tip: {{ product.casetype }}</li>
+            <li>Dimensiuni (H x D x W): {{ product.height }} x {{ product.size }} x {{ product.width }} mm</li>
+            <li>Sloturi expansiune: x{{ product.slotnum }}</li>
             {% endblock %}
-            {% coolerinfo %}
-            <li>Tip: {{ type }}</li>
-            <li>Racire: {{ cooling }}</li>
-            <li>Inaltime: {{ height }} mm</li>
-            <li>Numar Ventilatoare: {{ ventcount }}</li>
-            <li>Dimensiune ventilator: {{ ventsize }} mm</li>
+            {% block coolerinfo %}
+            <li>Tip: {{ product.type }}</li>
+            <li>Racire: {{ product.cooling }}</li>
+            <li>Inaltime: {{ product.height }} mm</li>
+            <li>Numar Ventilatoare: {{ product.ventcount }}</li>
+            <li>Dimensiune ventilator: {{ product.ventsize }} mm</li>
             {% endblock %}
-        </ul></p>
-    </div>
-    <a href="{{ product_link }}" class="btn btn-success align-self-center mb-2">Adauga in cos</a>
-</div>
+{#        </ul></p>#}
+{#    </div>#}
+{#    <a href="{{ product.product_link }}" class="btn btn-success align-self-center mb-2">Adauga in cos</a>#}
+{#</div>#}

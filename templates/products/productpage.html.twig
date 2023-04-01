@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{#{% block navhome %}#}
+{#    active#}
+{#{% endblock %}#}
+{% block bodystyle %}
+    style="background-color: black"
+{% endblock %}
+
+{% block body %}
+    <div class="container bg-transparent text-white">
+        <a href="/">Home</a>/<a href="/">Product</a>/<span href="/product/{{ product.id }}">{{ product.name }}</span>
+        <h3 class="mb-0">{{ product.name }}</h3>
+        <span>Cod:{% if product.SKU is empty %} N/A {% else %}{{ product.SKU }} {% endif %}</span>
+        <div class="row">
+            <div class="col-3">
+                <img class="card-img" src="{% if product.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %} {{ product.thumbnail }} {% endif %}" alt="...">
+            </div>
+            <div class="col-9">
+                <div class="col-12">
+                    <h4>Pret: {% if product.price is empty %} Free {% else %}{{ product.price }} {% endif %}</h4>
+                    <h4>Product Specifications</h4>
+                    {% use "index/product_template.html.twig" %}
+                    <ul>
+                        {{ block(product.type|lower~'info') }}
+                    </ul>
+                    <ul>
+                        {% for productImg in product.productImages %}
+                           <li><img alt="Product Image" src="/showcases/{{productImg.path}}"/></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <a href="#" class="btn btn-success align-self-center mb-2">Adauga in cos</a>
+            </div>
+        </div>
+        <div class="row">
+
+            <div  class="col-12">
+                <h4>Product Description</h4>
+                <div>
+                    {{ product.description | raw }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

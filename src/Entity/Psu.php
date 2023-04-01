@@ -6,6 +6,7 @@ use App\Repository\PsuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PsuRepository::class)]
 class Psu extends Product
@@ -16,6 +17,7 @@ class Psu extends Product
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(groups: ['need_validation'])]
     private ?int $power = null;
 
     #[ORM\ManyToMany(targetEntity: Vent::class, inversedBy: 'psus')]

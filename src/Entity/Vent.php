@@ -21,6 +21,9 @@ class Vent
     #[ORM\ManyToMany(targetEntity: Psu::class, mappedBy: 'vents')]
     private Collection $psus;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $count = null;
+
     public function __construct()
     {
         $this->psus = new ArrayCollection();
@@ -66,6 +69,18 @@ class Vent
         if ($this->psus->removeElement($psu)) {
             $psu->removeVent($this);
         }
+
+        return $this;
+    }
+
+    public function getCount(): ?int
+    {
+        return $this->count;
+    }
+
+    public function setCount(?int $count): self
+    {
+        $this->count = $count;
 
         return $this;
     }

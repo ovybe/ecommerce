@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PCCaseRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PCCaseRepository::class)]
 class PCCase extends Product
@@ -17,15 +18,19 @@ class PCCase extends Product
     private ?string $casetype = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(groups: ['need_validation'])]
     private ?float $height = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(groups: ['need_validation'])]
     private ?float $diameter = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(groups: ['need_validation'])]
     private ?float $width = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(groups: ['need_validation'])]
     private ?int $slots = null;
 
     public function getId(): ?int

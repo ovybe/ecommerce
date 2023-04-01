@@ -5,12 +5,14 @@ namespace App\Entity;
 use App\Repository\GpuRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: GpuRepository::class)]
 class Gpu extends Product
 {
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotNull(groups: ['need_validation'])]
     private ?string $interface = null;
 
     #[ORM\Column(nullable: true)]
@@ -20,6 +22,7 @@ class Gpu extends Product
     private ?string $memory = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero(groups: ['need_validation'])]
     private ?int $size = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]

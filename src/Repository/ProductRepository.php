@@ -14,6 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Product[]    findAll()
  * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  * @method Product[]    findAllByValue($value = null)
+ * @method Product[]    findAllByType()
  */
 class ProductRepository extends BaseProductRepository
 {

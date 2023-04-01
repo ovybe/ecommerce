@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\SsdRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SsdRepository::class)]
 class Ssd extends Product
@@ -20,6 +21,7 @@ class Ssd extends Product
     private ?string $interface = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(groups: ['need_validation'])]
     private ?int $capacity = null;
 
     #[ORM\Column(nullable: true)]
