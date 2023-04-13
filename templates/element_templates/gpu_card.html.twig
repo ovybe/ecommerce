@@ -1,0 +1,6 @@
+{#<li>Interfata: {% if gpu.gpuinterface is empty %} N/A {% else %} {{ gpu.gpuinterface }} {% endif %}</li>#}
+{#<li>Seria: {% if gpu.series is empty %} N/A {% else %} {{ gpu.series }} {% endif %}</li>#}
+{#<li>GPU Boost clock: {% if gpu.clock is empty %} N/A {% else %} {{ gpu.clock }} MHz {% endif %}</li>#}
+{#<li>Tip memorie: {% if gpu.gpumemory is empty %} N/A {% else %} {{ gpu.gpumemory }} {% endif %}</li>#}
+{#<li>Dimensiune memorie: {% if gpu.gpusize is empty %} N/A {% else %} {{ gpu.gpusize }} GB {% endif %}</li>#}
+<p class="text-dark-emphasis" style="font-size:0.8rem">{{ gpu.clock }} MHz {{ gpu.gpusize }} GB {{ gpu.gpumemory }}</p>

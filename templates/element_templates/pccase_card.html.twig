@@ -1,0 +1,4 @@
+{#<li>Tip: {% if case.casetype is empty %} N/A {% else %} {{ case.casetype }} {% endif %}</li>#}
+{#<li>Dimensiuni (H x D x W): {% if case.height is empty %} N/A {% else %} {{ case.height }} {% endif %} x {% if case.diameter is empty %} N/A {% else %} {{ case.diameter }} {% endif %} x {% if case.width is empty %} N/A {% else %} {{ case.width }} {% endif %} mm</li>#}
+{#<li>Sloturi expansiune: {% if case.slots is empty %} N/A {% else %} x{{ case.slots }} {% endif %}</li>#}
+<p class="text-dark-emphasis" style="font-size:0.8rem">{{ case.casetype }} {{ case.height }} x {{ case.diameter }} x {{ case.height }} mm</p>

@@ -1,0 +1,5 @@
+{#<li>Tip: {% if mem.memtype is empty %} N/A {% else %} {{ mem.memtype }} {% endif %}</li>#}
+{#<li>Capacitate: {% if mem.memcapacity is empty %} N/A {% else %} {{ mem.memcapacity }} GB {% endif %}</li>#}
+{#<li>Frecventa: {% if mem.memfrequency is empty %} N/A {% else %} {{ mem.memfrequency }} MHz {% endif %}</li>#}
+{#<li>Latenta CAS: {% if mem.latency is empty %} N/A {% else %} {{ mem.latency }} CL {% endif %}</li>#}
+<p class="text-dark-emphasis" style="font-size:0.8rem">{{ mem.memcapacity }} GB {{ mem.memtype }} {{ mem.memfrequency }} MHz</p>

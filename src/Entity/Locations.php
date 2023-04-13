@@ -46,7 +46,7 @@ class Locations
     public function __construct()
     {
         $this->products = new ArrayCollection();
-        $this->productInventories = new ArrayCollection();
+        $this->productInventories = $this->productInventories ?: new ArrayCollection();
     }
 
     public function getId(): ?int

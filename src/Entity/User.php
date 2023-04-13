@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -43,6 +45,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Contact::class, orphanRemoval: true)]
+    private Collection $contacts;
+
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Order $order_cart = null;
+
+    public function __construct()
+    {
+        $this->contacts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -170,6 +183,58 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Contact>
+     */
+    public function getContacts(): Collection
+    {
+        return $this->contacts;
+    }
+
+    public function addContact(Contact $contact): self
+    {
+        if (!$this->contacts->contains($contact)) {
+            $this->contacts->add($contact);
+            $contact->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContact(Contact $contact): self
+    {
+        if ($this->contacts->removeElement($contact)) {
+            // set the owning side to null (unless already changed)
+            if ($contact->getOwner() === $this) {
+                $contact->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getOrderCart(): ?Order
+    {
+        return $this->order_cart;
+    }
+
+    public function setOrderCart(?Order $order_cart): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($order_cart === null && $this->order_cart !== null) {
+            $this->order_cart->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($order_cart !== null && $order_cart->getUser() !== $this) {
+            $order_cart->setUser($this);
+        }
+
+        $this->order_cart = $order_cart;
 
         return $this;
     }

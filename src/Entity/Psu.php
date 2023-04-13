@@ -34,6 +34,7 @@ class Psu extends Product
 
     public function __construct()
     {
+        parent::__construct();
         $this->vents = new ArrayCollection();
     }
 

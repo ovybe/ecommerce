@@ -47,12 +47,14 @@ abstract class BaseProductRepository extends ServiceEntityRepository
         $sql = 'select t.* FROM(
                     SELECT 
                         p.id,
+                        p.uid,
                         p.name,
                         p.description,
                         p.sku,
                         p.thumbnail,
                         p.type,
                         p.seller,
+                        p.price,
                         p.created_at,
                         g.interface gpuinterface,
                         g.clock,

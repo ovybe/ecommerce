@@ -5,233 +5,161 @@
 {% block navhome %}
 active
 {% endblock %}
-{% block bodystyle %}
-style="background-color: black"
+{% block stylesheets %}
+    <link href="https://cdn.datatables.net/v/bs5/dt-1.13.4/r-2.4.1/sc-2.1.1/sb-1.4.2/datatables.min.css" rel="stylesheet"/>
+{% endblock %}
+{% block javascripts %}
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.4/r-2.4.1/sc-2.1.1/sb-1.4.2/datatables.min.js"></script>
 {% endblock %}
 
 {% block body %}
 <div class="container">
-    <div class="row">
-        <div class="col-2">
-            <ul style="list-style: none;">
-                <li class="bg-dark mb-2 p-1">
-                    <a class="text-white text-decoration-none">Categorii</a>
-                </li>
-                <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Placi Video</a>
-                </li>
-                <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Procesoare</a>
-                </li>
-                <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Placi de baza</a>
-                </li>
-                <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Memorii</a>
-                </li>
-                <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">SSD</a>
-                </li>
-                <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Hard disk-uri</a>
-                </li>
-                <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Surse</a>
-                </li>
-                <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Carcase</a>
-                </li>
-                <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Coolere</a>
-                </li>
-                <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Accesorii</a>
-                </li>
-            </ul>
+    <div class="row gutters-sm">
+        <div class="col-md-3 d-none d-md-block mt-3">
+            <div class="card">
+                <div class="card-body">
+                    <nav class="nav flex-column nav-pills nav-gap-y-1">
+                        <a href="#users" data-bs-toggle="tab" class="nav-item nav-link has-icon nav-link-faded active">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user me-2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>User Management
+                        </a>
+                        <a href="#product" data-bs-toggle="tab" class="nav-item nav-link has-icon nav-link-faded">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="-4 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="bi bi-box me-1" >
+                                <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
+                            </svg> Product Management
+                        </a>
+                        <a href="#location" data-bs-toggle="tab" class="nav-item nav-link has-icon nav-link-faded">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield me-2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Location Management
+                        </a>
+                    </nav>
+                </div>
+            </div>
         </div>
-        <div class="col-10" style="background-color: black">
-            <h4 class="text-light">Placi Video</h4>
-            {% for row in gpus|batch(4) %}
-            <div class="row bg-transparent">
-                {% for gpu in row  %}
-                <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                    <img src="{% if gpu.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ gpu.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ gpu.name }}</h5>
-                        <p class="card-text"><ul>
-                                <li>Interfata: {% if gpu.gpuinterface is empty %} N/A {% else %} {{ gpu.gpuinterface }} {% endif %}</li>
-                                <li>Seria: {% if gpu.series is empty %} N/A {% else %} {{ gpu.series }} {% endif %}</li>
-                                <li>GPU Boost clock: {% if gpu.clock is empty %} N/A {% else %} {{ gpu.clock }} MHz {% endif %}</li>
-                                <li>Tip memorie: {% if gpu.gpumemory is empty %} N/A {% else %} {{ gpu.gpumemory }} {% endif %}</li>
-                                <li>Dimensiune memorie: {% if gpu.gpusize is empty %} N/A {% else %} {{ gpu.gpusize }} GB {% endif %}</li>
-                        </ul></p>
-                    </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header border-bottom mb-3 d-flex d-md-none">
+                    <ul class="nav nav-tabs card-header-tabs nav-gap-x-1" role="tablist">
+                        <li class="nav-item">
+                            <a href="#users" data-bs-toggle="tab" class="nav-link has-icon active"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#product" data-bs-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#location" data-bs-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></a>
+                        </li>
+                    </ul>
                 </div>
-                {% endfor %}
-            </div>
-            {% endfor %}
-            <h4 class="text-light">Procesoare</h4>
-            {% for row in cpus|batch(4) %}
-            <div class="row bg-transparent">
-                {% for cpu in row  %}
-                    <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                        <img src="{% if cpu.thumbnail is empty %}https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png{% else %}/thumbnails/{{ cpu.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ cpu.name }}</h5>
-                            <p class="card-text"><ul>
-                                <li>Socket: {% if cpu.socket is empty %} N/A {% else %} {{ cpu.socket }} {% endif %}</li>
-                                <li>Seria: {% if cpu.series is empty %} N/A {% else %}{{ cpu.series }} {% endif %}</li>
-                                <li>Nucleu: {% if cpu.core is empty %} N/A {% else %} {{ cpu.core }} {% endif %}</li>
-                                <li>Frecventa: {% if cpu.cpufrequency is empty %} N/A {% else %} {{ cpu.cpufrequency }} GHz {% endif %}</li>
-                            </ul></p>
+                <div class="card-body tab-content">
+                    <div class="tab-pane active" id="users">
+                        <h4 class="text-light">Users</h4>
+                        <div class="table-responsive">
+                            <table id="usertable" class="table table-striped rounded users">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="row">Email</th>
+                                    <th scope="row">Name</th>
+                                    <th scope="row">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for usr in users %}
+                                    <tr>
+                                        <th scope="row">{{ usr.email }}</th>
+                                        <td>{{ usr.firstName }} {{ usr.lastName }}</td>
+                                        <td></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                {% endfor %}
+                    <div class="tab-pane" id="product">
+                        <h4 class="text-light">Products</h4>
+{#                        <div class="table-responsive">#}
+                            <table id="producttable" class="table table-striped display rounded products" style="width:100%;">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th></th>
+                                    <th scope="col">SKU</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Created At</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">UID</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for prod in products %}
+                                    <tr>
+                                        <td></td>
+                                        <td>{{ prod.sku }}</td>
+                                        <td class="pname">{{ prod.name }}</td>
+                                        <td>{{ prod.type }}</td>
+                                        <td>{{ prod.createdAt|date('d/m/Y') }}</td>
+                                        <td>{{ prod.price }}</td>
+                                        <td>{{ prod.status }}</td>
+                                        <td class="text-truncate" style="max-width:100px;">{{ prod.uid }}</td>
+
+                                        <td><a class="btn btn-dark" href="{{ path('app_product',{id:prod.uid}) }}"><i class="bi bi-info-circle"></i></a><a class="btn btn-dark" href="{{ path('app_edit_product',{product_id: prod.uid}) }}"><i class="bi bi-pencil-square"></i></a><button type="button" class="btn btn-dark conbtn" data-bs-toggle="modal" data-href="{{ path('app_delete_product',{product_id: prod.uid}) }}" data-bs-target="#confirmModal"><i class="bi bi-trash"></i></button></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+{#                        </div>#}
+                    </div>
+                    <div class="tab-pane" id="location">
+                        <h4 class="text-light">Locations</h4>
+                        <div class="table-responsive">
+                            <table id="locationtable" class="table table-striped rounded locations">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for loc in locations %}
+                                    <tr>
+                                        <th scope="row">{{ loc.id }}</th>
+                                        <td class="pname">{{ loc.name }}</td>
+                                        <td>{{ loc.address }}</td>
+                                        <td><a class="btn btn-dark" href="{{ path('app_edit_location',{id: loc.id}) }}"><i class="bi bi-pencil-square"></i></a><button type="button" class="btn btn-dark conbtn" data-bs-toggle="modal" data-href="{{ path('app_delete_location',{id:loc.id}) }}" data-bs-target="#confirmModal"><i class="bi bi-trash"></i></button></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-            {% endfor %}
-            <h4 class="text-light">Placi de Baza</h4>
-            {% for row in mbs|batch(4) %}
-                <div class="row bg-transparent">
-                    {% for mb in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if mb.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ mb.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ mb.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Format: {% if mb.format is empty %} N/A {% else %} {{ mb.format }} {% endif %}</li>
-                                    <li>Soclu procesor: {% if mb.cpusocket is empty %} N/A {% else %} {{ mb.cpusocket }} {% endif %}</li>
-                                    <li>Producator chipset: {% if mb.chipset is empty %} N/A {% else %} {{ mb.chipset }} {% endif %}</li>
-                                    <li>Model chipset: {% if mb.modelchipset is empty %} N/A {% else %} {{ mb.modelchipset }} {% endif %}</li>
-                                    <li>Interfata grafica: {% if mb.interface is empty %} N/A {% else %} {{ mb.interface }} {% endif %}</li>
-                                    <li>Tip Memorie: {% if mb.memory is empty %} N/A {% else %} {{ mb.memory }} {% endif %}</li>
-                                    <li>Tehnologie: {% if mb.tech is empty %} N/A {% else %} {{ mb.tech }} {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-            <h4 class="text-light">Memorii</h4>
-            {% for row in mems|batch(4) %}
-                <div class="row bg-transparent">
-                    {% for mem in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if mem.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ mem.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ mem.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Tip: {% if mem.memtype is empty %} N/A {% else %} {{ mem.memtype }} {% endif %}</li>
-                                    <li>Capacitate: {% if mem.capacity is empty %} N/A {% else %} {{ mem.capacity }} GB {% endif %}</li>
-                                    <li>Frecventa: {% if mem.frequency is empty %} N/A {% else %} {{ mem.frequency }} MHz {% endif %}</li>
-                                    <li>Latenta CAS: {% if mem.latency is empty %} N/A {% else %} {{ mem.latency }} CL {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-            <h4 class="text-light">SSD-uri</h4>
-            {% for row in ssds|batch(4) %}
-                <div class="row bg-transparent">
-                    {% for ssd in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if ssd.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ ssd.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ ssd.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Seria: {% if ssd.ssdseries is empty %} N/A {% else %}  {{ ssd.ssdseries }} {% endif %}</li>
-                                    <li>Interfata: {% if ssd.ssdinterface is empty %} N/A {% else %}  {{ ssd.ssdinterface }} {% endif %}</li>
-                                    <li>Capacitate: {% if ssd.ssdcapacity is empty %} N/A {% else %} {{ size}} TB {% endif %}</li>
-                                    <li>Citire max.: {% if ssd.maxread is empty %} N/A {% else %} {{ maxread }} MB/s {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-            <h4 class="text-light">Hard Disk-uri</h4>
-            {% for row in hdds|batch(4) %}
-                <div class="row bg-transparent">
-                    {% for hdd in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if hdd.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ hdd.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ hdd.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Seria: {% if hdd.ssdseries is empty %} N/A {% else %} {{ hdd.ssdseries }} {% endif %}</li>
-                                    <li>Interfata: {% if hdd.ssdinterface is empty %} N/A {% else %} {{ hdd.ssdinterface }} {% endif %}</li>
-                                    <li>Capacitate: {% if hdd.ssdcapacity is empty %} N/A {% else %}  {{ hdd.ssdcapacity }} TB {% endif %}</li>
-                                    <li>Buffer: {% if hdd.buffer is empty %} N/A {% else %} {{ hdd.buffer }} MB {% endif %}</li>
-                                    <li>Viteza: {% if hdd.maxreading is empty %} N/A {% else %} {{ hdd.maxreading }} RPM {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-            <h4 class="text-light">Surse</h4>
-            {% for row in psus|batch(4) %}
-                <div class="row bg-transparent">
-                    {% for psu in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if psu.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ psu.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ psu.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Putere: {% if psu.power is empty %} N/A {% else %}  {{ psu.power }} W {% endif %}</li>
-{#                                    <li>Numar ventilatoare: {% for vent in vents %} {{ vent }} {% endfor %}</li>#}
-                                    <li>PFC: {% if psu.pfc is empty %} N/A {% else %}  {{ psu.pfc }} {% endif %}</li>
-                                    <li>Eficienta: {% if psu.efficiency is empty %} N/A {% else %} {{ psu.efficiency }} {% endif %}</li>
-                                    <li>Certificare: {% if psu.certification is empty %} N/A {% else %} {{ psu.certification }} {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-            <h4 class="text-light">Carcase</h4>
-            {% for row in cases|batch(4) %}
-                <div class="row bg-transparent">
-                    {% for case in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if case.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ case.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ case.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Tip: {% if case.casetype is empty %} N/A {% else %} {{ case.casetype }} {% endif %}</li>
-                                    <li>Dimensiuni (H x D x W): {% if case.height is empty %} N/A {% else %} {{ case.height }} {% endif %} x {% if case.diameter is empty %} N/A {% else %} {{ case.diameter }} {% endif %} x {% if case.width is empty %} N/A {% else %} {{ case.width }} {% endif %} mm</li>
-                                    <li>Sloturi expansiune: {% if case.slots is empty %} N/A {% else %} x{{ case.slots }} {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-            <h4 class="text-light">Coolere</h4>
-            {% for row in coolers|batch(4) %}
-                <div class="row bg-transparent">
-                    {% for cooler in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if cooler.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ cooler.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ cooler.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Tip: {% if cooler.ctype is empty %} N/A {% else %} {{ cooler.ctype }} {% endif %}</li>
-                                    <li>Racire: {% if cooler.cooling == false %} Nu {% else %} Da {% endif %}</li>
-                                    <li>Inaltime: {% if cooler.coolerheight is empty %} N/A {% else %} {{ cooler.coolerheight }} mm {% endif %}</li>
-                                    <li>Numar Ventilatoare: {% if cooler.vents is empty %} N/A {% else %} {{ cooler.vents }} {% endif %}</li>
-                                    <li>Dimensiune ventilator: {% if cooler.coolersize is empty %} N/A {% else %} {{ cooler.coolersize }} mm {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
         </div>
     </div>
 </div>
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmTitle">Confirmation Message</h5>
+{#                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">#}
+{#                        <span aria-hidden="true">&times;</span>#}
+{#                    </button>#}
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="modConfirmBtn" class="btn btn-primary">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptsend %}
 
-<div class="container" >
-
-</div>
+    <script src="/js/adminmenu.js"></script>
 {% endblock %}

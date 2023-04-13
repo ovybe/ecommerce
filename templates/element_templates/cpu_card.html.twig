@@ -1,0 +1,5 @@
+{#<li>Socket: {% if cpu.socket is empty %} N/A {% else %} {{ cpu.socket }} {% endif %}</li>#}
+{#<li>Seria: {% if cpu.series is empty %} N/A {% else %}{{ cpu.series }} {% endif %}</li>#}
+{#<li>Nucleu: {% if cpu.core is empty %} N/A {% else %} {{ cpu.core }} {% endif %}</li>#}
+{#<li>Frecventa: {% if cpu.cpufrequency is empty %} N/A {% else %} {{ cpu.cpufrequency }} GHz {% endif %}</li>#}
+<p class="text-dark-emphasis" style="font-size:0.8rem">{{ cpu.cpufrequency }} GHz {{ cpu.socket }} Socket</p>

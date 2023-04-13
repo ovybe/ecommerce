@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Contact{% endblock %}
+
+{% block bodystyle %}
+    style="background-color: black"
+{% endblock %}
+
+{% block javascripts %}
+{#    {{ encore_entry_script_tags('app') }}#}
+{% endblock %}
+
+{% block body %}
+
+        {{ form_start(form) }}
+    <div class="d-flex">
+{#        <div class="col-1"></div>#}
+    <h4 class="text-white text-center col-12 ps-5">Edit Contact</h4>
+    </div>
+    <div class="container d-flex col-12 justify-content-center mx-auto">
+
+
+            <div class="errors">
+                {{ form_errors(form) }}
+            </div>
+
+            <div class="col-6 ms-5 container-fluid bg-light p-5 pt-4 me-0 rounded">
+                    <div class="row input-group mb-3 ms-1">
+                        {{ form_label(form.name) }}
+                        {{ form_errors(form.name) }}
+                        {{ form_widget(form.name) }}
+                    </div>
+                    <div class="row input-group mb-3 ms-1">
+                        {{ form_label(form.country) }}
+                        {{ form_errors(form.country) }}
+                        {{ form_widget(form.country) }}
+                    </div>
+                    <div class="row input-group mb-3 ms-1">
+                        {{ form_label(form.county) }}
+                        {{ form_errors(form.county) }}
+                        {{ form_widget(form.county) }}
+                    </div>
+                    <div class="row input-group mb-3 ms-1">
+                        {{ form_label(form.city) }}
+                        {{ form_errors(form.city) }}
+                        {{ form_widget(form.city) }}
+                    </div>
+                    <div class="row input-group mb-3 ms-1">
+                        {{ form_label(form.address) }}
+                        {{ form_errors(form.address) }}
+                        {{ form_widget(form.address) }}
+                    </div>
+                    <div class="row input-group mb-3 ms-1">
+                        {{ form_label(form.postalCode) }}
+                        {{ form_errors(form.postalCode) }}
+                        {{ form_widget(form.postalCode) }}
+                    </div>
+                    <div class="row input-group mb-3 ms-1">
+                        {{ form_label(form.phone) }}
+                        {{ form_errors(form.phone) }}
+                        {{ form_widget(form.phone) }}
+                    </div>
+                    <div class="row input-group mb-3 ms-1">
+                        {{ form_label(form.email) }}
+                        {{ form_errors(form.email) }}
+                        {{ form_widget(form.email) }}
+                    </div>
+                    <div class="row col-3 mx-auto">
+                        <button class="btn btn-outline-dark" type="submit">Submit</button>
+                    </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
+{% block javascriptsend %}
+{% endblock %}

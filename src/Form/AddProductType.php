@@ -27,7 +27,7 @@ class AddProductType extends AbstractType
             ->add('ssd',SsdType::class)
             ->add('psu',PsuType::class)
             ->add('cooler',CoolerType::class)
-            ->add('case',PCCaseType::class)
+            ->add('pccase',PCCaseType::class)
             ->add('submit', SubmitType::class, ['label' => 'Add Product', 'attr'=> ['class'=>'btn btn-outline-dark']])
         ;
     }

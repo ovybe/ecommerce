@@ -40,8 +40,17 @@ use Symfony\Component\Uid\Uuid;
 
 class AddProductController extends AbstractController
 {
-    #[Route('/add/product', name: 'app_add_product')]
-    public function index(Request $request,ManagerRegistry $managerRegistry, EntityManagerInterface $entityManager, SluggerInterface $slugger, ValidatorInterface $validator): Response
+    private EntityManagerInterface $entityManager;
+    private SluggerInterface $slugger;
+    private ValidatorInterface $validator;
+    public function __construct(EntityManagerInterface $entityManager, SluggerInterface $slugger, ValidatorInterface $validator)
+    {
+        $this->entityManager = $entityManager;
+        $this->slugger = $slugger;
+        $this->validator = $validator;
+    }
+    #[Route('/admin/add/product', name: 'app_add_product')]
+    public function index(Request $request,ManagerRegistry $managerRegistry): Response
     {
         $types_arr=array(
             'Gpu'=>'GPU',
@@ -62,12 +71,12 @@ class AddProductController extends AbstractController
             $prodimg = new File('', false);
             $productImgs[] = $prodimg;
         }
-        if ($request->getSession()->has('stored_form_session') && $session_form=$request->getSession()->get('stored_form_session') ) {
-            $form=$this->recoverSession($request,$productImgs);
-        } else {
+//        if ($request->getSession()->has('stored_form_session') && $session_form=$request->getSession()->get('stored_form_session') ) {
+//            $form=$this->recoverSession($request,$productImgs); // THIS IS BUGGY AS HELL, GENERATE NEW PRODUCT INV LIST
+//        } else {
             $productInventories=$this->generateProductInvList($locations);
             $form = $this->createForm(AddProductType::class, array('productInventories' => $productInventories, 'productImages' => $productImgs));
-        }
+//        }
         if ($request->isMethod('POST')) {
                 $form->handleRequest($request);
 
@@ -75,7 +84,7 @@ class AddProductController extends AbstractController
                     // handle the form of your type
                     $task = $form->getData();
                     $product=$this->buildProduct($task);
-                    $errors=$validator->validate($product,null,['need_validation']);
+                    $errors=$this->validator->validate($product,null,['need_validation']);
                     //dd();
                     if(count($errors)>0){
                         // add groups to other forms
@@ -86,31 +95,31 @@ class AddProductController extends AbstractController
                         }
                     }
                     elseif($product) {
-                        $entityManager->persist($product);
+                        $this->entityManager->persist($product);
 
                         //dd($task['productImages']);
                         foreach ($task['productImages'] as $prodImg) {
-                            $this->handleImage($prodImg,$slugger,$product,$entityManager);
+                            $this->handleImage($prodImg,$this->slugger,$product,$this->entityManager);
                         }
-//                        dd($product);
+
 
                         foreach ($task['productInventories'] as $pi) {
                             if ($pi->getQuantity() != null) {
                                 $pi->setProduct($product);
                                 $product->addProductInventory($pi);
-                                $entityManager->persist($pi);
+                                $this->entityManager->persist($pi);
                                 // STOPPED AT VENTS
                             }
                         }
                         // ADD BROCHURE FUNCTION HERE
                         $fileToUpload = $form->get('product')->get('thumbnail')->getData();
-                        $newFilepath = $this->uploadFile($fileToUpload, $slugger);
+                        $newFilepath = $this->uploadFile($fileToUpload, $this->slugger);
                         $product->setThumbnail($newFilepath);
                         // add some checks for product fields
+                        $this->entityManager->persist($product);
                         //dd($product);
-                        $entityManager->persist($product);
-                        //dd($product);
-                        $entityManager->flush();
+                        $this->entityManager->flush();
+                        return $this->redirectToRoute('app_edit_product',["product_id"=>$product->getUid()], 302);
                     }
                     else{
                         //dd($product);
@@ -125,7 +134,7 @@ class AddProductController extends AbstractController
                 unset($newSession['productImages']);
             $request->getSession()->set('stored_form_session',$newSession);
         }
-        return $this->render('products/addproduct.html.twig', [
+        return $this->render('forms/addproduct.html.twig', [
             'controller_name' => 'AddProductController',
             'form' => $form,
             'session' => $session_arr,
@@ -133,7 +142,31 @@ class AddProductController extends AbstractController
 //            'errors' => $form->getErrors(true),
         ]);
     }
-    #[Route('/add/location', name: 'app_add_location')]
+    #[Route('/admin/edit/location/{id}', name: 'app_edit_location')]
+    public function locationEdit(Request $request,ManagerRegistry $managerRegistry, EntityManagerInterface $entityManager,int $id): Response
+    {
+        $location=$entityManager->getRepository(Locations::class)->findOneBy(['id'=>$id]);
+        if(!$location)
+            return new Response("Location not found",404);
+
+        $form=$this->createForm(LocationsType::class,$location);
+
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                // handle the form of your type
+                //dd($location);
+                $entityManager->persist($location);
+                $entityManager->flush();
+            }
+        }
+
+        return $this->render('forms/addlocation.html.twig', [
+            'controller_name' => 'Add Location',
+            'form' => $form,
+        ]);
+    }
+    #[Route('/admin/add/location', name: 'app_add_location')]
     public function locationAdd(Request $request,ManagerRegistry $managerRegistry, EntityManagerInterface $entityManager): Response
     {
         $location=new Locations();
@@ -150,12 +183,12 @@ class AddProductController extends AbstractController
             }
         }
 
-        return $this->render('products/addlocation.html.twig', [
+        return $this->render('forms/addlocation.html.twig', [
             'controller_name' => 'Add Location',
             'form' => $form,
         ]);
     }
-    #[Route('/edit/product/{product_id}', name: 'app_edit_product')]
+    #[Route('/admin/edit/product/{product_id}', name: 'app_edit_product')]
     public function editProduct(Request $request,ManagerRegistry $managerRegistry, EntityManagerInterface $entityManager, SluggerInterface $slugger, ValidatorInterface $validator,string $product_id): Response
     {
         $types_arr=array(
@@ -200,7 +233,7 @@ class AddProductController extends AbstractController
         }
         //dd($locations);
         $productInvs=$this->generateProductInvList($locations);
-        foreach($productInvs as $pi){
+        foreach($productInvs as $pi){ //
             $product->addProductInventory($pi);
         }
         //dd($productInvs);
@@ -306,13 +339,39 @@ class AddProductController extends AbstractController
             $request->getSession()->set('stored_form_session',$newSession);
         }
 
-        return $this->render('products/editproduct.html.twig', [
+        return $this->render('forms/editproduct.html.twig', [
             'controller_name' => 'Edit Product',
             'form' => $form,
             'locations' => $locations,
 //            'session' => $session_arr,
             'productTypes' => $types_arr,
         ]);
+    }
+    #[Route('/admin/delete/product/{product_id}', name: 'app_delete_product')]
+    public function deleteProduct(Request $request, EntityManagerInterface $entityManager, string $product_id){
+        $product=$entityManager->getRepository(Product::class)->findOneBy(['uid'=>$product_id]);
+        if($product){
+            $entityManager->remove($product);
+            $entityManager->flush();
+            $route = $request->headers->get('referer');
+            if($route)
+                return $this->redirect($route);
+            else return $this->redirectToRoute('app_admin',[],302);
+        }
+        else return new Response("Product not found", 404);
+    }
+    #[Route('/admin/delete/location/{id}', name: 'app_delete_location')]
+    public function deleteLocation(Request $request, EntityManagerInterface $entityManager, int $id){
+        $location=$entityManager->getRepository(Locations::class)->findOneBy(['id'=>$id]);
+        if($location){
+            $entityManager->remove($location);
+            $entityManager->flush();
+            $route = $request->headers->get('referer');
+            if($route)
+                return $this->redirect($route);
+            else return $this->redirectToRoute('app_admin',[],302);
+        }
+        else return new Response("Location not found", 404);
     }
     #[Route('/insert/product', name: 'app_insert_product')]
     public function handleForm(Request $request): Response
@@ -374,7 +433,7 @@ class AddProductController extends AbstractController
         $product->setSeller($task['seller']);
         $product->setPrice($task['price']);
         $product->setStatus($task['status']);
-        //dd($product);
+//        dd($product);
 
 
 //        dd($product)
@@ -445,8 +504,10 @@ class AddProductController extends AbstractController
         foreach ($locations as $location) {
             $pi = new ProductInventory();
             $pi->setLocation($location);
+            $pi->setQuantity(0);
             $pi->setModifiedAt(DateTimeImmutable::createFromMutable(new DateTime()));
             $pi->setCreatedAt(DateTimeImmutable::createFromMutable(new DateTime()));
+            //$location->addProductInventories($pi);
             $productInventories[] = $pi;
         }
         return $productInventories;

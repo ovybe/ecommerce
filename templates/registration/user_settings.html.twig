@@ -1,0 +1,162 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ controller_name }}{% endblock %}
+
+{% block navhome %}
+    active
+{% endblock %}
+{% block bodystyle %}
+    style="background-color: black"
+{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+    <div class="d-flex">
+        <div class="col-1"></div>
+        <h4 class="text-white col-4 ps-5">User Info</h4>
+        <h4 class="text-white col-7">Contact Details</h4>
+    </div>
+    <div class="container d-flex ms-4">
+
+
+        <div class="errors">
+            {{ form_errors(form) }}
+        </div>
+
+        <div class="col-4 container-fluid bg-light p-5 pt-4 me-0 rounded">
+            <div class="row input-group mb-3 ms-1">
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email) }}
+                {{ form_errors(form.email) }}
+            </div>
+            <div class="row input-group mb-3 ms-1">
+                {{ form_label(form.firstName) }}
+                {{ form_widget(form.firstName) }}
+                {{ form_errors(form.firstName) }}
+            </div>
+            <div class="row input-group mb-3 ms-1">
+                {{ form_label(form.lastName) }}
+                {{ form_widget(form.lastName) }}
+                {{ form_errors(form.lastName) }}
+            </div>
+            <div class="row input-group mb-3 ms-1">
+                {{ form_label(form.plainPassword) }}
+                {{ form_widget(form.plainPassword) }}
+                {{ form_errors(form.plainPassword) }}
+            </div>
+            <div class="row col-3 mx-auto">
+
+                {{ form_widget(form.submit, {'label_html': form.submit.vars.label|raw}) }}
+            </div>
+        </div>
+        <div class="col-8 ms-5 container-fluid bg-light p-5 pt-4 me-0 rounded">
+            <div class="row input-group mb-3">
+{#                <div class="table-responsive"></div>#}
+                <table id="contact-table">
+                    <thead>
+                        <tr>
+                            <td>Name</td>
+                            <td>Country</td>
+                            <td>State</td>
+                            <td>City</td>
+                            <td>Address</td>
+                            <td>Postal Code</td>
+                            <td>Phone</td>
+                            <td>Email</td>
+                            <td>Actions</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for contact in contacts %}
+                        {% include 'element_templates/contact.html.twig' with {'contact': contact} %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-dark conbtn" data-bs-toggle="modal" data-bs-target="#myModal">Add Contact</button>
+            </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+    <!-- Add a modal to the template -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Contact</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="modal-form">
+                        {{ form_errors(contact_form) }}
+                        {{ form_start(contact_form, {'attr': {'id': 'modal-form'}}) }}
+                        <div class="row input-group mb-3 ms-1">
+                            {{ form_errors(contact_form.name) }}
+                            {{ form_label(contact_form.name) }}
+                            {{ form_widget(contact_form.name) }}
+                        </div>
+                        <div class="row input-group mb-3 ms-1">
+                            {{ form_errors(contact_form.country) }}
+                            {{ form_label(contact_form.country) }}
+                            {{ form_widget(contact_form.country) }}
+                        </div>
+                        <div class="row input-group mb-3 ms-1">
+                            {{ form_errors(contact_form.county) }}
+                            {{ form_label(contact_form.county) }}
+                            {{ form_widget(contact_form.county) }}
+                        </div>
+                        <div class="row input-group mb-3 ms-1">
+                            {{ form_errors(contact_form.city) }}
+                            {{ form_label(contact_form.city) }}
+                            {{ form_widget(contact_form.city) }}
+                        </div>
+                        <div class="row input-group mb-3 ms-1">
+                            {{ form_errors(contact_form.address) }}
+                            {{ form_label(contact_form.address) }}
+                            {{ form_widget(contact_form.address) }}
+                        </div>
+                        <div class="row input-group mb-3 ms-1">
+                            {{ form_errors(contact_form.postalCode) }}
+                            {{ form_label(contact_form.postalCode) }}
+                            {{ form_widget(contact_form.postalCode) }}
+                        </div>
+                        <div class="row input-group mb-3 ms-1">
+                            {{ form_errors(contact_form.phone) }}
+                            {{ form_label(contact_form.phone) }}
+                            {{ form_widget(contact_form.phone) }}
+                        </div>
+                        <div class="row input-group mb-3 ms-1">
+                            {{ form_errors(contact_form.email) }}
+                            {{ form_label(contact_form.email) }}
+                            {{ form_widget(contact_form.email) }}
+                        </div>
+
+                        {{ form_widget(contact_form) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="modal-submit">Submit</button>
+                    {{ form_end(contact_form) }}
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmTitle">Confirmation Message</h5>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="modConfirmBtn" class="btn btn-primary">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    {% block javascriptsend %}
+        <script src="/js/usersettings.js"></script>
+    {% endblock %}

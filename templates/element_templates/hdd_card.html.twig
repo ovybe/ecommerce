@@ -1,0 +1,5 @@
+<li>Seria: {% if hdd.ssdseries is empty %} N/A {% else %} {{ hdd.ssdseries }} {% endif %}</li>
+<li>Interfata: {% if hdd.ssdinterface is empty %} N/A {% else %} {{ hdd.ssdinterface }} {% endif %}</li>
+<li>Capacitate: {% if hdd.ssdcapacity is empty %} N/A {% else %}  {{ hdd.ssdcapacity }} TB {% endif %}</li>
+<li>Buffer: {% if hdd.buffer is empty %} N/A {% else %} {{ hdd.buffer }} MB {% endif %}</li>
+<li>Viteza: {% if hdd.maxreading is empty %} N/A {% else %} {{ hdd.maxreading }} RPM {% endif %}</li>

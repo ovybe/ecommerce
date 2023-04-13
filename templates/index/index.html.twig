@@ -6,7 +6,10 @@
 active
 {% endblock %}
 {% block bodystyle %}
-style="background-color: black"
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/shop.css">
 {% endblock %}
 
 {% block body %}
@@ -14,218 +17,113 @@ style="background-color: black"
     <div class="row">
         <div class="col-2">
             <ul style="list-style: none;">
-                <li class="bg-dark mb-2 p-1">
-                    <a class="text-white text-decoration-none">Categorii</a>
+                <li class="mb-2 p-1">
+                    <a class="text-body-emphasis text-decoration-none">Categorii</a>
                 </li>
                 <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Placi Video</a>
+                    <a class="bg-transparent text-body-emphasis text-decoration-none ms-1">Placi Video</a>
                 </li>
                 <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Procesoare</a>
+                    <a class="bg-transparent text-body-emphasis text-decoration-none ms-1">Procesoare</a>
                 </li>
                 <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Placi de baza</a>
+                    <a class="bg-transparent text-body-emphasis text-decoration-none ms-1">Placi de baza</a>
                 </li>
                 <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Memorii</a>
+                    <a class="bg-transparent text-body-emphasis text-decoration-none ms-1">Memorii</a>
                 </li>
                 <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">SSD</a>
+                    <a class="bg-transparent text-body-emphasis text-decoration-none ms-1">SSD</a>
                 </li>
                 <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Hard disk-uri</a>
+                    <a class="bg-transparent text-body-emphasis text-decoration-none ms-1">Hard disk-uri</a>
                 </li>
                 <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Surse</a>
+                    <a class="bg-transparent text-body-emphasis text-decoration-none ms-1">Surse</a>
                 </li>
                 <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Carcase</a>
+                    <a class="bg-transparent text-body-emphasis text-decoration-none ms-1">Carcase</a>
                 </li>
                 <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Coolere</a>
+                    <a class="bg-transparent text-body-emphasis text-decoration-none ms-1">Coolere</a>
                 </li>
                 <li>
-                    <a class="bg-transparent text-white text-decoration-none ms-1">Accesorii</a>
+                    <a class="bg-transparent text-body-emphasis text-decoration-none ms-1">Accesorii</a>
                 </li>
             </ul>
         </div>
-        <div class="col-10" style="background-color: black">
-            <h4 class="text-light">Placi Video</h4>
+        <div class="col-10">
+            <h4 class="text-body-emphasis">GPUs</h4>
             {% for row in gpus|batch(4) %}
-            <div class="row bg-transparent">
-                {% for gpu in row  %}
-                <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                    <img src="{% if gpu.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ gpu.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ gpu.name }}</h5>
-                        <p class="card-text"><ul>
-                                <li>Interfata: {% if gpu.gpuinterface is empty %} N/A {% else %} {{ gpu.gpuinterface }} {% endif %}</li>
-                                <li>Seria: {% if gpu.series is empty %} N/A {% else %} {{ gpu.series }} {% endif %}</li>
-                                <li>GPU Boost clock: {% if gpu.clock is empty %} N/A {% else %} {{ gpu.clock }} MHz {% endif %}</li>
-                                <li>Tip memorie: {% if gpu.gpumemory is empty %} N/A {% else %} {{ gpu.gpumemory }} {% endif %}</li>
-                                <li>Dimensiune memorie: {% if gpu.gpusize is empty %} N/A {% else %} {{ gpu.gpusize }} GB {% endif %}</li>
-                        </ul></p>
-                    </div>
+                <div class="row bg-transparent">
+                    {% for gpu in row  %}
+                        {% include 'element_templates/card.html.twig' with {'card': gpu} %}
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
             {% endfor %}
-            <h4 class="text-light">Procesoare</h4>
+            <h4 class="text-body-emphasis">CPUs</h4>
             {% for row in cpus|batch(4) %}
-            <div class="row bg-transparent">
-                {% for cpu in row  %}
-                    <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                        <img src="{% if cpu.thumbnail is empty %}https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png{% else %}/thumbnails/{{ cpu.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ cpu.name }}</h5>
-                            <p class="card-text"><ul>
-                                <li>Socket: {% if cpu.socket is empty %} N/A {% else %} {{ cpu.socket }} {% endif %}</li>
-                                <li>Seria: {% if cpu.series is empty %} N/A {% else %}{{ cpu.series }} {% endif %}</li>
-                                <li>Nucleu: {% if cpu.core is empty %} N/A {% else %} {{ cpu.core }} {% endif %}</li>
-                                <li>Frecventa: {% if cpu.cpufrequency is empty %} N/A {% else %} {{ cpu.cpufrequency }} GHz {% endif %}</li>
-                            </ul></p>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
+                <div class="row bg-transparent">
+                    {% for cpu in row  %}
+                        {% include 'element_templates/card.html.twig' with {'card': cpu} %}
+                    {% endfor %}
+                </div>
             {% endfor %}
-            <h4 class="text-light">Placi de Baza</h4>
+            <h4 class="text-body-emphasis">Motherboards</h4>
             {% for row in mbs|batch(4) %}
                 <div class="row bg-transparent">
                     {% for mb in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if mb.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ mb.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ mb.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Format: {% if mb.format is empty %} N/A {% else %} {{ mb.format }} {% endif %}</li>
-                                    <li>Soclu procesor: {% if mb.cpusocket is empty %} N/A {% else %} {{ mb.cpusocket }} {% endif %}</li>
-                                    <li>Producator chipset: {% if mb.chipset is empty %} N/A {% else %} {{ mb.chipset }} {% endif %}</li>
-                                    <li>Model chipset: {% if mb.modelchipset is empty %} N/A {% else %} {{ mb.modelchipset }} {% endif %}</li>
-                                    <li>Interfata grafica: {% if mb.interface is empty %} N/A {% else %} {{ mb.interface }} {% endif %}</li>
-                                    <li>Tip Memorie: {% if mb.memory is empty %} N/A {% else %} {{ mb.memory }} {% endif %}</li>
-                                    <li>Tehnologie: {% if mb.tech is empty %} N/A {% else %} {{ mb.tech }} {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
+                        {% include 'element_templates/card.html.twig' with {'card': mb} %}
                     {% endfor %}
                 </div>
             {% endfor %}
-            <h4 class="text-light">Memorii</h4>
+            <h4 class="text-body-emphasis">RAM</h4>
             {% for row in mems|batch(4) %}
                 <div class="row bg-transparent">
                     {% for mem in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if mem.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ mem.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ mem.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Tip: {% if mem.memtype is empty %} N/A {% else %} {{ mem.memtype }} {% endif %}</li>
-                                    <li>Capacitate: {% if mem.capacity is empty %} N/A {% else %} {{ mem.capacity }} GB {% endif %}</li>
-                                    <li>Frecventa: {% if mem.frequency is empty %} N/A {% else %} {{ mem.frequency }} MHz {% endif %}</li>
-                                    <li>Latenta CAS: {% if mem.latency is empty %} N/A {% else %} {{ mem.latency }} CL {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
+                        {% include 'element_templates/card.html.twig' with {'card': mem} %}
                     {% endfor %}
                 </div>
             {% endfor %}
-            <h4 class="text-light">SSD-uri</h4>
+            <h4 class="text-body-emphasis">SSDs</h4>
             {% for row in ssds|batch(4) %}
                 <div class="row bg-transparent">
                     {% for ssd in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if ssd.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ ssd.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ ssd.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Seria: {% if ssd.ssdseries is empty %} N/A {% else %}  {{ ssd.ssdseries }} {% endif %}</li>
-                                    <li>Interfata: {% if ssd.ssdinterface is empty %} N/A {% else %}  {{ ssd.ssdinterface }} {% endif %}</li>
-                                    <li>Capacitate: {% if ssd.ssdcapacity is empty %} N/A {% else %} {{ size}} TB {% endif %}</li>
-                                    <li>Citire max.: {% if ssd.maxread is empty %} N/A {% else %} {{ maxread }} MB/s {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
+                        {% include 'element_templates/card.html.twig' with {'card': ssd} %}
                     {% endfor %}
                 </div>
             {% endfor %}
-            <h4 class="text-light">Hard Disk-uri</h4>
+            <h4 class="text-body-emphasis">Hard Disks</h4>
             {% for row in hdds|batch(4) %}
-                <div class="row bg-transparent">
-                    {% for hdd in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if hdd.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ hdd.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ hdd.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Seria: {% if hdd.ssdseries is empty %} N/A {% else %} {{ hdd.ssdseries }} {% endif %}</li>
-                                    <li>Interfata: {% if hdd.ssdinterface is empty %} N/A {% else %} {{ hdd.ssdinterface }} {% endif %}</li>
-                                    <li>Capacitate: {% if hdd.ssdcapacity is empty %} N/A {% else %}  {{ hdd.ssdcapacity }} TB {% endif %}</li>
-                                    <li>Buffer: {% if hdd.buffer is empty %} N/A {% else %} {{ hdd.buffer }} MB {% endif %}</li>
-                                    <li>Viteza: {% if hdd.maxreading is empty %} N/A {% else %} {{ hdd.maxreading }} RPM {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+            <div class="row bg-transparent">
+                {% for ssd in row  %}
+                    {% include 'element_templates/card.html.twig' with {'card': ssd} %}
+                {% endfor %}
+            </div>
             {% endfor %}
-            <h4 class="text-light">Surse</h4>
+            <h4 class="text-body-emphasis">PSUs</h4>
             {% for row in psus|batch(4) %}
-                <div class="row bg-transparent">
-                    {% for psu in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if psu.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ psu.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ psu.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Putere: {% if psu.power is empty %} N/A {% else %}  {{ psu.power }} W {% endif %}</li>
-{#                                    <li>Numar ventilatoare: {% for vent in vents %} {{ vent }} {% endfor %}</li>#}
-                                    <li>PFC: {% if psu.pfc is empty %} N/A {% else %}  {{ psu.pfc }} {% endif %}</li>
-                                    <li>Eficienta: {% if psu.efficiency is empty %} N/A {% else %} {{ psu.efficiency }} {% endif %}</li>
-                                    <li>Certificare: {% if psu.certification is empty %} N/A {% else %} {{ psu.certification }} {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+            <div class="row bg-transparent">
+                {% for psu in row  %}
+                    {% include 'element_templates/card.html.twig' with {'card': psu} %}
+                {% endfor %}
+            </div>
             {% endfor %}
-            <h4 class="text-light">Carcase</h4>
+            <h4 class="text-body-emphasis">PC Cases</h4>
             {% for row in cases|batch(4) %}
-                <div class="row bg-transparent">
-                    {% for case in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if case.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ case.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ case.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Tip: {% if case.casetype is empty %} N/A {% else %} {{ case.casetype }} {% endif %}</li>
-                                    <li>Dimensiuni (H x D x W): {% if case.height is empty %} N/A {% else %} {{ case.height }} {% endif %} x {% if case.diameter is empty %} N/A {% else %} {{ case.diameter }} {% endif %} x {% if case.width is empty %} N/A {% else %} {{ case.width }} {% endif %} mm</li>
-                                    <li>Sloturi expansiune: {% if case.slots is empty %} N/A {% else %} x{{ case.slots }} {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+            <div class="row bg-transparent">
+                {% for case in row  %}
+                    {% include 'element_templates/card.html.twig' with {'card': case} %}
+                {% endfor %}
+            </div>
             {% endfor %}
-            <h4 class="text-light">Coolere</h4>
+            <h4 class="text-body-emphasis">Coolers</h4>
             {% for row in coolers|batch(4) %}
-                <div class="row bg-transparent">
-                    {% for cooler in row  %}
-                        <div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">
-                            <img src="{% if cooler.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ cooler.thumbnail }}{% endif %}" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ cooler.name }}</h5>
-                                <p class="card-text"><ul>
-                                    <li>Tip: {% if cooler.ctype is empty %} N/A {% else %} {{ cooler.ctype }} {% endif %}</li>
-                                    <li>Racire: {% if cooler.cooling == false %} Nu {% else %} Da {% endif %}</li>
-                                    <li>Inaltime: {% if cooler.coolerheight is empty %} N/A {% else %} {{ cooler.coolerheight }} mm {% endif %}</li>
-                                    <li>Numar Ventilatoare: {% if cooler.vents is empty %} N/A {% else %} {{ cooler.vents }} {% endif %}</li>
-                                    <li>Dimensiune ventilator: {% if cooler.coolersize is empty %} N/A {% else %} {{ cooler.coolersize }} mm {% endif %}</li>
-                                </ul></p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+            <div class="row bg-transparent">
+                {% for cooler in row  %}
+                    {% include 'element_templates/card.html.twig' with {'card': cooler} %}
+                {% endfor %}
+            </div>
             {% endfor %}
         </div>
     </div>

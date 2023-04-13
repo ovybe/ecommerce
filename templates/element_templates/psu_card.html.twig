@@ -1,0 +1,6 @@
+{#<li>Putere: {% if psu.power is empty %} N/A {% else %}  {{ psu.power }} W {% endif %}</li>#}
+{#<li>Numar ventilatoare: {% for vent in vents %} {{ vent }} {% endfor %}</li>#}
+{#<li>PFC: {% if psu.pfc is empty %} N/A {% else %}  {{ psu.pfc }} {% endif %}</li>#}
+{#<li>Eficienta: {% if psu.efficiency is empty %} N/A {% else %} {{ psu.efficiency }} {% endif %}</li>#}
+{#<li>Certificare: {% if psu.certification is empty %} N/A {% else %} {{ psu.certification }} {% endif %}</li>#}
+<p class="text-dark-emphasis" style="font-size:0.8rem">{{ psu.power }} W {% if psu.pfc %} Act. {% else %} Pass. {% endif %} PFC {{ psu.efficiency }}% Efficiency</p>

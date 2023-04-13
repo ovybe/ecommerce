@@ -1,5 +1,8 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    globals:
+        kernelProjectDir: '%kernel.project_dir%'
+#        cartService: "%kernel.project_dir%/src/Service/CartSessionStorage"
 
 when@test:
     twig:

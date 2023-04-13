@@ -1,0 +1,49 @@
+{% set card_type = card.type %}
+{% set card_template = "element_templates/"~card_type~"_card.html.twig" %}
+{#<div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">#}
+{#    <img src="{% if card.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ card.thumbnail }}{% endif %}" class="card-img-top" alt="...">#}
+{#    <div class="card-body">#}
+{#        <h5 class="card-title">{{ card.name }}</h5>#}
+{#        <p class="card-text">#}
+{#            <ul>#}
+{#            {% include card_template with {card_type : card}  %}#}
+{#            </ul>#}
+{#        </p>#}
+{#    </div>#}
+{#    <button class="btn btn-success purchasebtn" data-uid="{{ card.uid }}"><i class="bi bi-cart-plus-fill"></i> Add To Cart</button>#}
+{#</div>#}
+
+<div class="col-md-3 col-sm-6">
+    <div class="product-grid">
+        <div class="product-image">
+            <a href="#">
+                <img class="pic-1" style="height:300px;" src="{% if card.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ card.thumbnail }}{% endif %}">
+                <img class="pic-2" style="height:300px;" src="{% if card.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ card.thumbnail }}{% endif %}">
+            </a>
+            <ul class="social">
+                <li><a href="{{ path('app_product',{id:card.uid}) }}" data-tip="View Page"><i class="bi bi-search"></i></a></li>
+                <li><a href="" data-tip="Add to Wishlist"><i class="bi bi-basket3"></i></a></li>
+                {% if is_granted("ROLE_ADMIN") %}
+                <li><a href="{{ path('app_edit_product',{product_id:card.uid}) }}" data-tip="Edit Product"><i class="bi bi-pencil"></i></a></li>
+                {% endif %}
+            </ul>
+{#            <span class="product-new-label">Sale</span>#}
+{#            <span class="product-discount-label">20%</span>#}
+        </div>
+{#        <ul class="rating">#}
+{#            <li class="fa fa-star"></li>#}
+{#            <li class="fa fa-star"></li>#}
+{#            <li class="fa fa-star"></li>#}
+{#            <li class="fa fa-star"></li>#}
+{#            <li class="fa fa-star disable"></li>#}
+{#        </ul>#}
+        <div class="product-content">
+            <h3 class="title"><a href="{{ path('app_product',{id:card.uid}) }}">{{ card.name }}</a></h3>
+            {% include card_template with {card_type : card}  %}
+            <div class="price">{{ card.price }} RON
+{#                <span>$20.00</span>#}
+            </div>
+            <button class="btn btn-outline-success add-to-cart" data-uid="{{ card.uid }}">Add To Cart</button>
+        </div>
+    </div>
+</div>

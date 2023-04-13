@@ -1,0 +1,14 @@
+<tr>
+    <td class="d-table-cell pname text-truncate" style="max-width: 100px;">{{ contact.name }}</td>
+    <td class="d-table-cell text-truncate">{{ contact.country.iso3 }}</td>
+    <td class="d-table-cell text-truncate" style="max-width: 100px;">{{ contact.county }}</td>
+    <td class="d-table-cell text-truncate" style="max-width: 100px;">{{ contact.city }}</td>
+    <td class="d-table-cell text-truncate" style="max-width: 200px;">{{ contact.address }}</td>
+    <td class="d-table-cell text-truncate">{{ contact.postalCode }}</td>
+    <td class="d-table-cell text-truncate">...{{ contact.phone | slice(-4) }}</td>
+    <td class="d-table-cell text-truncate">{{ contact.email | split('@', 2)[0] }}</td>
+    <td><a class="btn btn-dark" href="{{ path('app_edit_contact',{id:contact.id}) }}"><i class="bi bi-pencil-square"></i></a>
+        <button type="button" class="btn btn-dark conbtn" data-bs-toggle="modal"
+                data-id="{{ contact.id }}"
+                data-bs-target="#confirmModal"><i class="bi bi-trash"></i></button></td>
+</tr>

@@ -16,7 +16,12 @@ class CoolerType extends ProductType
     {
 //        parent::buildForm($builder, $options);
         $builder
-            ->add('ctype')
+            ->add('ctype', ChoiceType::class,[
+                'choices' => [
+                    'Air' => "Air",
+                    'Liquid' => "Liquid",
+                ]
+            ])
             ->add('cooling', ChoiceType::class,[
                 'choices' => [
                     'Active' => true,
