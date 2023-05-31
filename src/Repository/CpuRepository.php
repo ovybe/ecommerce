@@ -14,12 +14,44 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Cpu[]    findAll()
  * @method Cpu[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  * @method Cpu[]    findAllByValue($value = null)
+ * @method Cpu[]    findAllByStatusAndQuantity(int $status, int $max)
  */
 class CpuRepository extends BaseProductRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Cpu::class);
+    }
+
+    /**
+     * @return object[] The objects.
+     */
+    public function getFilters(): array
+    {
+        $sql = 'SELECT seller as filter_name, count(seller) as count_filter, "seller" as filter_column
+                FROM product p
+                union
+                select c.cpu_name as filter_name, c.cpu_count as filter_count, c.cpu_column as filter_column
+                from (
+                    select socket as cpu_name, count(socket) as cpu_count, "socket" as cpu_column
+                    from cpu
+                    group by cpu_name
+                    union
+                    select series as cpu_name, count(series) as cpu_count, "series" as cpu_column
+                    from cpu
+                    group by cpu_name
+                    union
+                    select core as cpu_name, count(core) as cpu_count, "core" as cpu_column
+                    from cpu
+                    group by cpu_name
+                    union
+                    select frequency as cpu_name, count(frequency) as cpu_count, "frequency" as cpu_column
+                    from cpu
+                    group by cpu_name
+                ) as c';
+        $stmt= $this->getEntityManager()->getConnection()->prepare($sql);
+        return $stmt->executeQuery()->fetchAllAssociative();
+
     }
 
     public function save(Cpu $entity, bool $flush = false): void

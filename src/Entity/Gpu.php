@@ -15,13 +15,13 @@ class Gpu extends Product
     #[Assert\NotNull(groups: ['need_validation'])]
     private ?string $interface = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: false)]
     private ?int $clock = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: false)]
     private ?string $memory = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: false)]
     #[Assert\PositiveOrZero(groups: ['need_validation'])]
     private ?int $size = null;
 

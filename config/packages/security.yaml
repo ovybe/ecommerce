@@ -24,7 +24,6 @@ security:
                 lifetime: 604800 # 1 week in seconds
                 # where to redirect after logout
                 # target: app_any_route
-
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -36,6 +35,7 @@ security:
     access_control:
          - { path: ^/admin, roles: ROLE_ADMIN }
          - { path: ^/user, roles: ROLE_USER }
+         - { path: ^/stripe, roles: ROLE_USER }
 
 when@test:
     security:

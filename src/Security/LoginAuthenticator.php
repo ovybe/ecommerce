@@ -31,6 +31,7 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
 
         $request->getSession()->set(Security::LAST_USERNAME, $email);
 
+
         return new Passport(
             new UserBadge($email),
             new PasswordCredentials($request->request->get('password', '')),
@@ -45,6 +46,13 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
+
+        $user=$request->getUser();
+
+//        if (!$user->isVerified()) {
+//            // Add a flash message to notify the user that their email is not verified
+//            $request->getSession()->getFlashBag()->add('warning', 'Please verify your email address to fully access your account.');
+//        }
 
         return new RedirectResponse($this->urlGenerator->generate('app_index'));
         //throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);

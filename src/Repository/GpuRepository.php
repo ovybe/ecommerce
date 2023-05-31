@@ -14,12 +14,48 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Gpu[]    findAll()
  * @method Gpu[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  * @method Gpu[]    findAllByValue($value = null)
+ * @method Gpu[]    findAllByStatusAndQuantity(int $status, int $max)
  */
 class GpuRepository extends BaseProductRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Gpu::class);
+    }
+
+    /**
+     * @return object[] The objects.
+     */
+    public function getFilters(): array
+    {
+        $sql = 'SELECT seller as filter_name, count(seller) as count_filter, "seller" as filter_column
+        FROM product p
+        union
+        select g.gpu_name as filter_name, g.gpu_count as filter_count, g.gpu_column as filter_column
+        from (
+        select interface as gpu_name, count(interface) as gpu_count, "interface" as gpu_column
+        from gpu
+        group by gpu_name
+        union
+        select clock as gpu_name, count(clock) as gpu_count, "clock" as gpu_column
+        from gpu
+        group by gpu_name
+        union
+        select memory as gpu_name, count(memory) as gpu_count, "memory" as gpu_column
+        from gpu
+        group by gpu_name
+        union
+        select size as gpu_name, count(size) as gpu_count, "size" as gpu_column
+        from gpu
+        group by gpu_name
+        union
+        select series as gpu_name, count(series) as gpu_count, "series" as gpu_column
+        from gpu
+        group by gpu_name
+        ) as g';
+        $stmt= $this->getEntityManager()->getConnection()->prepare($sql);
+        return $stmt->executeQuery()->fetchAllAssociative();
+
     }
 
     public function save(Gpu $entity, bool $flush = false): void

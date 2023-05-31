@@ -26,6 +26,7 @@ class ProductType extends AbstractType
                     new NotBlank(),
                 ]
             ])
+            ->add('shortDesc',HiddenType::class)
             ->add('description',HiddenType::class)
             ->add('SKU',null,[
                 'label' => 'SKU Code',

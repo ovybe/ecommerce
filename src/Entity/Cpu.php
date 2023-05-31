@@ -10,16 +10,16 @@ use Doctrine\ORM\Mapping as ORM;
 class Cpu extends Product
 {
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: false)]
     private ?int $socket = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $series = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $core = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: false)]
     #[Assert\PositiveOrZero(groups: ['need_validation'])]
     private ?float $frequency = null;
 

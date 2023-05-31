@@ -29,22 +29,48 @@ $("span#addloc").on('click', function () {
 
     $(".location-box").append(newRow);
 });
+
+
+Quill.register("modules/resize",window.QuillResizeModule);
+
 var quill = new Quill('#editor', {
     modules: {
         toolbar: [
             [{ header: [1, 2, false] }],
             ['bold', 'italic', 'underline'],
-            ['image', 'code-block']
-        ]
+            ['link','image','video', 'code-block']
+        ],
+        resize:{
+            showSize:true,
+            locale:{}
+        },
+        imageDrop: true
     },
     placeholder: 'Compose an epic...',
     theme: 'snow'  // or 'bubble'
 });
 
+var quillShort = new Quill('#editor2', {
+    modules: {
+        toolbar: [
+            [{ header: [1, 2, false] }],
+            ['bold', 'italic', 'underline'],
+            ['link','image','video', 'code-block']
+        ],
+        resize:{
+            showSize:true,
+            locale:{}
+        },
+        imageDrop: true
+    },
+    placeholder: 'Compose an epic...',
+    theme: 'snow'  // or 'bubble'
+});
 
 $( "form" ).submit(function( event ) {
     // event.preventDefault();
     $("#add_product_product_description").val(quill.root.innerHTML);
+    $("#add_product_product_shortDesc").val(quill.root.innerHTML);
     console.log($("#add_product_product_description").val());
     // return
 });

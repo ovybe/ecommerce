@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ controller_name }}{% endblock %}
+
+{% block bodystyle %}
+    style="background-color: black"
+{% endblock %}
+
+{% block javascripts %}
+{#    {{ encore_entry_script_tags('app') }}#}
+{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.css" integrity="sha512-bYPO5jmStZ9WI2602V2zaivdAnbAhtfzmxnEGh9RwtlI00I9s8ulGe4oBa5XxiC6tCITJH/QG70jswBhbLkxPw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block body %}
+{#    {{ dump(app.user.country.timezones, app.user.country.iso2) }}#}
+    <div id="hl" class="d-none" data-tz="{{ app.user.country.timezones.0.abbreviation }}" data-locale="{{ app.user.country.iso2 | lower }}"></div>
+    {{ form_start(form) }}
+    <div class="d-flex">
+        {#        <div class="col-1"></div>#}
+        <h4 class="text-white text-center col-12 ps-5">{{ controller_name }}</h4>
+    </div>
+    <div class="container d-flex col-12 justify-content-center mx-auto">
+
+        <div class="errors">
+            {{ form_errors(form) }}
+        </div>
+
+        <div class="col-6 ms-5 container-fluid bg-light p-5 pt-4 me-0 rounded">
+            <div class="input-group mb-3">
+                <div class="form-floating">
+                    {{ form_widget(form.code,{'attr':{
+                        'class':'form-control',
+                        'placeholder':'ex. RO2023'
+                    }})
+                    }}
+                    {{ form_label(form.code) }}
+                </div>
+                <div class="invalid-feedback">
+                    {{ form_errors(form.code) }}
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <div class="form-check form-switch col-12">
+                    {{ form_widget(form.percentage,{'attr':{
+                        'class':'form-check-input',
+                        'role':'switch',
+                    }})
+                    }}
+                    <label class="form-check-label" for="discount_percentage">Toggle reading price as percentage instead</label>
+
+                </div>
+                <div>
+                    {{ form_errors(form.percentage) }}
+                </div>
+                <div class="form-floating">
+                    {{ form_widget(form.price,{'attr':{
+                        'class':'form-control',
+                        'placeholder':'ex. 100'
+                    }})
+                    }}
+                    {{ form_label(form.price) }}
+                </div>
+                <div class="invalid-feedback">
+                    {{ form_errors(form.price) }}
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <div class="form-floating">
+                    {{ form_widget(form.uses,{'attr':{
+                        'class':'form-control',
+                        'placeholder':'ex: 100 or empty for infinite'
+                    }})
+                    }}
+                    {{ form_label(form.uses) }}
+                </div>
+                <div class="invalid-feedback">
+                    {{ form_errors(form.uses) }}
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <div class="col-12 ms-1">{{ form_label(form.expiration) }}</div>
+                <div class="">
+                        {{ form_widget(form.expiration) }}
+                </div>
+{#                <div class="form-floating">#}
+{#                    {{ form_widget(form.expiration.date.day,{'attr':{#}
+{#                        'class':'form-select pb-0',#}
+{#                        'aria-label':'Day'#}
+{#                    }})#}
+{#                    }}#}
+{#                    {{ form_label(form.expiration.date.day) }}#}
+{#                </div>#}
+{#                <div class="form-floating">#}
+{#                    {{ form_widget(form.expiration.date.month,{'attr':{#}
+{#                        'class':'form-select pb-0',#}
+{#                        'aria-label':'Month'#}
+{#                    }})#}
+{#                    }}#}
+{#                    {{ form_label(form.expiration.date.month) }}#}
+{#                </div>#}
+{#                <div class="form-floating">#}
+{#                    {{ form_widget(form.expiration.date.year,{'attr':{#}
+{#                        'class':'form-select pb-0',#}
+{#                        'aria-label':'Year'#}
+{#                    }})#}
+{#                    }}#}
+{#                    {{ form_label(form.expiration.date.year) }}#}
+{#                </div>#}
+{#                <div class="form-floating">#}
+{#                    {{ form_widget(form.expiration.time.hour,{'attr':{#}
+{#                        'class':'form-select pb-0',#}
+{#                        'aria-label':'Hours'#}
+{#                    }})#}
+{#                    }}#}
+{#                    {{ form_label(form.expiration.time.hour) }}#}
+{#                </div>#}
+{#                <div class="form-floating">#}
+{#                    {{ form_widget(form.expiration.time.minute,{'attr':{#}
+{#                        'class':'form-select pb-0',#}
+{#                        'aria-label':'Minutes'#}
+{#                    }})#}
+{#                    }}#}
+{#                    {{ form_label(form.expiration.time.minute) }}#}
+{#                </div>#}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.expiration) }}
+                </div>
+            </div>
+            <div class="row col-3 mx-auto">
+                <button class="btn btn-outline-dark" type="submit">Submit</button>
+            </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
+{% block javascriptsend %}
+    <script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment-timezone-with-data-1970-2030.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/js/discount.js"></script>
+{% endblock %}

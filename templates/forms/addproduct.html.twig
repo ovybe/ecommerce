@@ -17,13 +17,13 @@
         {{ form_start(form) }}
     <div class="d-flex">
         <div class="col-1"></div>
-    <h4 class="text-white col-11 ps-5">Add Product</h4>
+    <h4 class="text-body col-11 ps-5">Add Product</h4>
     </div>
     <div class="container d-flex">
 
 
 
-            <div class="col-6 ms-5 container-fluid bg-light p-5 pt-4 me-0 rounded">
+            <div class="col-6 ms-5 container-fluid bg-white border p-5 pt-4 me-0 rounded">
                 <div class="errors">
                     {{ form_errors(form) }}
 {#                    {% for error in errors %}#}
@@ -35,6 +35,17 @@
                         {{ form_label(form.product.name) }}
                         {{ form_errors(form.product.name) }}
                         {{ form_widget(form.product.name) }}
+                    </div>
+                    <div class="row input-group mb-3 ms-1">
+                        {{ form_label(form.product.shortDesc) }}
+                        {{ form_errors(form.product.shortDesc) }}
+                        {{ form_widget(form.product.shortDesc) }}
+{#                        TODO: FIX SHORT DESC#}
+                        <div class="rounded-bottom bg-white" id="editor2">
+                            <p>Hello World!</p>
+                            <p>Some initial <strong>bold</strong> text</p>
+                            <p><br></p>
+                        </div>
                     </div>
                     <div class="row input-group mb-3 ms-1">
                         {{ form_label(form.product.description) }}
@@ -321,7 +332,7 @@
                         {{ form_widget(form.submit) }}
                     </div>
             </div>
-            <div class="col-4 container-fluid ms-5 bg-light p-5 pt-4 rounded">
+            <div class="col-4 container-fluid ms-5 bg-white border p-5 pt-4 rounded">
                 <div class="row input-group border-bottom">
                 <label for="status">Status Produs</label>
                     {{ form_errors(form.product.status) }}
@@ -366,5 +377,7 @@
     {{ form_end(form) }}
 {% endblock %}
 {% block javascriptsend %}
+    <script src=" https://cdn.jsdelivr.net/npm/quill-image-drop-module@1.0.3/image-drop.min.js "></script>
+    <script src="https://cdn.jsdelivr.net/npm/@botom/quill-resize-module@2.0.0/dist/quill-resize-module.js" integrity="sha256-gTRDF8F0xoFWFk4MTlXJXwQXiQBBCf2l3wcgkfEO/Zs=" crossorigin="anonymous"></script>
     <script src="/js/addproduct.js"></script>
 {% endblock %}

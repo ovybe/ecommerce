@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\InheritanceType('JOINED')]
@@ -44,7 +45,7 @@ class Product
     #[ORM\Column(nullable: true)]
     private ?float $price = null;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductImages::class)]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductImages::class,orphanRemoval: true)]
     private Collection $productImages;
 
     #[ORM\Column(nullable: true)]
@@ -63,6 +64,16 @@ class Product
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: CartItem::class, orphanRemoval: true)]
     private Collection $cartItems;
 
+    #[ORM\Column(type: Types::TEXT, length:300, nullable: true)]
+    private ?string $shortDesc = null;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Option::class)]
+    private Collection $options;
+
+    #[ORM\ManyToOne(inversedBy: 'product')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
+
     public function __construct()
     {
         $this->productImages = new ArrayCollection();
@@ -71,6 +82,7 @@ class Product
         $this->carts = new ArrayCollection();
         $this->orders = new ArrayCollection();
         $this->cartItems = new ArrayCollection();
+        $this->options = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -191,6 +203,31 @@ class Product
 
         return $this;
     }
+    public function checkImgInCollection(UploadedFile $newImg): bool{
+        $newImgHash=sha1_file($newImg);
+        $imageFound=false;
+        foreach($this->productImages as $existentImg){
+            if($existentImg->getHash()==$newImgHash){
+                // IF THE HASH IS THE SAME IT MEANS IMAGE ALREADY EXISTS
+                $imageFound=true;
+                break;
+            }
+        }
+        return $imageFound;
+    }
+    public function checkImgAtIndex(ProductImages $newImg,int $elIndex): bool{
+        $newImgHash=$newImg->getHash();
+        $imageFound=false;
+        $prodImg=$this->productImages->get($elIndex);
+        if($prodImg==null)
+            return $imageFound;
+        #dd($prodImg);
+        if($prodImg->getHash()==$newImgHash){
+            // IF THE HASH IS THE SAME IT MEANS IMAGE ALREADY EXISTS
+            $imageFound=true;
+        }
+        return $imageFound;
+    }
 
     public function removeProductImage(ProductImages $productImage): self
     {
@@ -272,7 +309,7 @@ class Product
         if ($this->productInventories->removeElement($productInventory)) {
             // set the owning side to null (unless already changed)
             if ($productInventory->getProduct() === $this) {
-                $productInventory->setProduct(null);
+                $productInventory->setProduct(new Product());
             }
         }
 
@@ -317,6 +354,84 @@ class Product
                 $cartItem->setProduct(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getShortDesc(): ?string
+    {
+        return $this->shortDesc;
+    }
+
+    public function setShortDesc(?string $shortDesc): self
+    {
+        $this->shortDesc = $shortDesc;
+
+        return $this;
+    }
+    /**
+     * Calculates the item total.
+     *
+     * @return float|int
+     */
+    public function getTotalInventory(): float
+    {
+        $total=0;
+        foreach($this->getProductInventories() as $pi){
+            $total+=$pi->getQuantity();
+        }
+        return $total;
+    }
+    public function getHighestInventory(): ProductInventory{
+        $max_pi=null;
+        $max_q=-1;
+        foreach($this->getProductInventories() as $pi){
+            if($pi->getQuantity()>$max_q){
+                $max_q=$pi->getQuantity();
+                $max_pi=$pi;
+            }
+        }
+        return $max_pi;
+    }
+
+    /**
+     * @return Collection<int, Option>
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
+    }
+
+    public function addOption(Option $option): self
+    {
+        if (!$this->options->contains($option)) {
+            $this->options->add($option);
+            $option->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOption(Option $option): self
+    {
+        if ($this->options->removeElement($option)) {
+            // set the owning side to null (unless already changed)
+            if ($option->getProduct() === $this) {
+                $option->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

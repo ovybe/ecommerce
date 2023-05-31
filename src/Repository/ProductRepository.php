@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Cpu;
+use App\Entity\Gpu;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,6 +24,28 @@ class ProductRepository extends BaseProductRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Product::class);
+    }
+
+    public function findByFilters($filter_arr){
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('p')
+            ->from(Product::class, 'p')
+            ->leftJoin(Gpu::class, 'g',Join::WITH, 'p.id=g.id')
+            ->leftJoin(Cpu::class,'c',Join::WITH,'p.id=c.id');
+
+        $k=0;
+        foreach ($filter_arr as $key => $filters) {
+            foreach($filters as $f_index => $filter){
+                $qb->orWhere(":filter_key".$k." like :filter".$f_index)
+                ->setParameter('filter_key'.$k,$key)
+                ->setParameter('filter' . $f_index, '%' . $filter . '%');
+                $k++;
+            }
+        }
+        #->where($filter_arr);
+        dd($qb->getQuery());
+
+        return $qb->getQuery()->getResult();
     }
 
     public function save(Product $entity, bool $flush = false): void

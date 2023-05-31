@@ -16,9 +16,13 @@ class ProductImages
     #[ORM\Column(length: 255)]
     private ?string $path = null;
 
+
     #[ORM\ManyToOne(inversedBy: 'productImages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $hash = null;
 
     public function getId(): ?int
     {
@@ -45,6 +49,18 @@ class ProductImages
     public function setProduct(?Product $product): self
     {
         $this->product = $product;
+
+        return $this;
+    }
+
+    public function getHash(): ?string
+    {
+        return $this->hash;
+    }
+
+    public function setHash(string $hash): self
+    {
+        $this->hash = $hash;
 
         return $this;
     }

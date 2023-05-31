@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PCStore{% endblock %}
+
+{% block navhome %}
+active
+{% endblock %}
+{% block bodystyle %}
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/shop.css">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            <ul style="list-style: none;">
+                <li class="mb-2 p-1">
+                    <h5 class="text-body-emphasis text-decoration-none">Categories</h5>
+                </li>
+                <li>
+                    <a href="{{ path('app_catalog',{value:'gpu'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">GPUs</a>
+                </li>
+                <li>
+                    <a href="{{ path('app_catalog',{value:'cpu'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">CPUs</a>
+                </li>
+                <li>
+                    <a href="{{ path('app_catalog',{value:'motherboard'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Motherboards</a>
+                </li>
+                <li>
+                    <a href="{{ path('app_catalog',{value:'memory'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Memories</a>
+                </li>
+                <li>
+                    <a href="{{ path('app_catalog',{value:'ssd'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">SSDs & Hard Disks</a>
+                </li>
+                <li>
+                    <a href="{{ path('app_catalog',{value:'psu'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">PSUs</a>
+                </li>
+                <li>
+                    <a href="{{ path('app_catalog',{value:'pccase'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">PC Cases</a>
+                </li>
+                <li>
+                    <a href="{{ path('app_catalog',{value:'cooler'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Coolers</a>
+                </li>
+                <li>
+                    <a href="{{ path('app_catalog',{value:''}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Accesories</a>
+                </li>
+            </ul>
+            <ul style="list-style: none;">
+                <li class="mb-2 p-1">
+                    <h5 id="filterh" data-cat="{{ category }}" class="text-body-emphasis text-decoration-none">Filtre</h5>
+                </li>
+                {% for col_name,col_array in filters %}
+                    <li>
+                        <h6 class="bg-transparent text-body-emphasis text-decoration-none ms-1">{{ col_name|capitalize }}</h6>
+                    </li>
+                    <ul style="list-style: none;">
+                    {% for filter in col_array %}
+                        <li>
+                            <input data-col="{{ col_name }}" class="filter" type="checkbox">
+                            <span class="filter_val" class="bg-transparent text-body-emphasis text-decoration-none">{{ filter[0] }}</span><span class="filter_count" class="bg-transparent text-body-emphasis text-decoration-none"> ({{ filter[1] }})</span>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endfor %}
+
+
+            </ul>
+        </div>
+        <div id="prod-list" class="col-10">
+            {% if prods is not empty %}
+                {% include 'element_templates/products_generate.html.twig' with {'prods': prods} %}
+            {% else %}
+                <h4 class="text-center mt-3">No product has been found for your search.</h4>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container" >
+
+</div>
+{% endblock %}
+
+{% block javascriptsend %}
+    <script src="/js/filter.js"></script>
+{% endblock %}

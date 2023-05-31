@@ -11,10 +11,6 @@ $('.product-content').on('click','button.add-to-cart', function(event) {
             console.log(data);
             $(".shoppingCart").html(data);
 
-            // Append the new element to the table
-            // $('#contact-table tbody').append(data);
-            // Close the modal
-            // $('#confirmModal').modal('hide');
         }
     });
 });

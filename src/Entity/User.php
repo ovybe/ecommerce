@@ -52,9 +52,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Order $order_cart = null;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: PaymentDetail::class)]
+    private Collection $paymentDetails;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Countries $country = null;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
+        $this->paymentDetails = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -235,6 +242,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->order_cart = $order_cart;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PaymentDetail>
+     */
+    public function getPaymentDetails(): Collection
+    {
+        return $this->paymentDetails;
+    }
+
+    public function addPaymentDetail(PaymentDetail $paymentDetail): self
+    {
+        if (!$this->paymentDetails->contains($paymentDetail)) {
+            $this->paymentDetails->add($paymentDetail);
+            $paymentDetail->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removePaymentDetail(PaymentDetail $paymentDetail): self
+    {
+        if ($this->paymentDetails->removeElement($paymentDetail)) {
+            // set the owning side to null (unless already changed)
+            if ($paymentDetail->getOwner() === $this) {
+                $paymentDetail->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCountry(): ?Countries
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?Countries $country): self
+    {
+        $this->country = $country;
 
         return $this;
     }

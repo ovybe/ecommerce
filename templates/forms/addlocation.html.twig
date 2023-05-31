@@ -3,8 +3,8 @@
 {% block title %}Add Product{% endblock %}
 
 {% block bodystyle %}
-    style="background-color: black"
 {% endblock %}
+{% block headerdiv %}{% endblock %}
 
 {% block javascripts %}
 {#    {{ encore_entry_script_tags('app') }}#}
@@ -24,7 +24,7 @@
                 {{ form_errors(form) }}
             </div>
 
-            <div class="col-6 ms-5 container-fluid bg-light p-5 pt-4 me-0 rounded">
+            <div class="col-6 container-fluid bg-white border p-5 pt-4 rounded mx-auto">
                     <div class="row input-group mb-3 ms-1">
                         {{ form_label(form.name) }}
                         {{ form_widget(form.name) }}
@@ -33,19 +33,19 @@
                         {{ form_label(form.address) }}
                         {{ form_widget(form.address) }}
                     </div>
-                    <div class="row input-group mb-3">
+                    <div class="row input-group mb-3 ms-1">
                         {{ form_label(form.country) }}
                         {{ form_widget(form.country) }}
                     </div>
-                    <div class="row input-group mb-3">
+                    <div class="row input-group mb-3 ms-1">
                         {{ form_label(form.city) }}
                         {{ form_widget(form.city) }}
                     </div>
-                <div class="row input-group mb-3">
+                <div class="row input-group mb-3 ms-1">
                     {{ form_label(form.coordX) }}
                     {{ form_widget(form.coordX) }}
                 </div>
-                <div class="row input-group mb-3">
+                <div class="row input-group mb-3 ms-1">
                     {{ form_label(form.coordY) }}
                     {{ form_widget(form.coordY) }}
                 </div>

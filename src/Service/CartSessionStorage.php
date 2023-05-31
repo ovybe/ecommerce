@@ -62,6 +62,19 @@ class CartSessionStorage
         'status' => Order::STATUS_CART
     ]);
     }
+    /**
+     * Gets the user's cart in session.
+     *
+     * @return Order|null
+     */
+    public function getCartByUser(): ?Order
+    {
+        return $this->cartRepository->findOneBy([
+            'id' => $this->getCartId(),
+            'status' => Order::STATUS_CART,
+            'user_id' => $this->security->getUser()->getId(),
+        ]);
+    }
 
     /**
     * Sets the cart in session.

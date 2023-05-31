@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Contact{% endblock %}
+
+{% block bodystyle %}
+    style="background-color: black"
+{% endblock %}
+
+{% block javascripts %}
+{#    {{ encore_entry_script_tags('app') }}#}
+{% endblock %}
+
+{% block body %}
+
+    {{ form_start(form) }}
+    <div class="d-flex">
+{#        <div class="col-1"></div>#}
+    <h4 class="text-white text-center col-12 ps-5">Edit Contact</h4>
+    </div>
+    <div class="container d-flex col-12 justify-content-center mx-auto">
+
+            <div class="errors">
+                {{ form_errors(form) }}
+            </div>
+
+            <div class="col-6 ms-5 container-fluid bg-light p-5 pt-4 me-0 rounded">
+                <div class="input-group mb-3">
+                    <div class="form-floating">
+                        {{ form_widget(form.country,{'attr':{
+                            'class':'form-select pb-0',
+                            'aria-label':'Romania'
+                        }})
+                        }}
+                        {{ form_label(form.country) }}
+                    </div>
+                    <div class="invalid-feedback mb-1">
+                        {{ form_errors(form.country) }}
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="form-floating">
+                        {{ form_widget(form.city,{'attr':{
+                            'class':'form-control',
+                            'placeholder':'Arad'
+                        }})
+                        }}
+                        {{ form_label(form.city) }}
+                    </div>
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.city) }}
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="form-floating">
+                        {{ form_widget(form.customerName,{'attr':{
+                            'class':'form-control',
+                            'placeholder':'Name Here'
+                        }})
+                        }}
+                        {{ form_label(form.customerName) }}
+                    </div>
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.customerName) }}
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="form-floating">
+                        {{ form_widget(form.addressLine1,{'attr':{
+                            'class':'form-control',
+                            'placeholder':'Address Here'
+                        }})
+                        }}
+                        {{ form_label(form.addressLine1) }}
+                    </div>
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.addressLine1) }}
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="form-floating">
+                        {{ form_widget(form.addressLine2,{'attr':{
+                            'class':'form-control',
+                            'placeholder':'Address Here'
+                        }})
+                        }}
+                        {{ form_label(form.addressLine2) }}
+                    </div>
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.addressLine2) }}
+                    </div>
+                </div>
+                    <div class="input-group mb-3">
+                        <div class="form-floating">
+                            {{ form_widget(form.postalCode,{'attr':{
+                                'class':'form-control',
+                                'placeholder':'123456'
+                            }})
+                            }}
+                            {{ form_label(form.postalCode) }}
+                        </div>
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.postalCode) }}
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span id="prefixPhone" class="input-group-text"></span>
+                        <div class="form-floating">
+                            {{ form_widget(form.phone,{'attr':{
+                                'class':'form-control',
+                                'placeholder':'123456789'
+                            }})
+                            }}
+                            {{ form_label(form.phone) }}
+                        </div>
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.phone) }}
+                        </div>
+                    </div>
+                    <div class="row col-3 mx-auto">
+                        <button class="btn btn-outline-dark" type="submit">Submit</button>
+                    </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
+{% block javascriptsend %}
+    <script src="/js/checkout.js"></script>
+{% endblock %}

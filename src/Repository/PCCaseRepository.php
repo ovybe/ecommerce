@@ -22,6 +22,41 @@ class PCCaseRepository extends BaseProductRepository
         parent::__construct($registry, PCCase::class);
     }
 
+    /**
+     * @return object[] The objects.
+     */
+    public function getFilters(): array
+    {
+        $sql = 'SELECT seller as filter_name, count(seller) as count_filter, "seller" as filter_column
+                FROM product p
+                union
+                select pc.pccase_name as filter_name, pc.pccase_count as filter_count, pc.pccase_column as filter_column
+                from(
+                select casetype as pccase_name, count(casetype) as pccase_count, "casetype" as pccase_column
+                from pccase
+                group by pccase_name
+                union
+                select height as pccase_name, count(height) as pccase_count, "height" as pccase_column
+                from pccase
+                group by pccase_name
+                union
+                select diameter as pccase_name, count(diameter) as pccase_count, "diameter" as pccase_column
+                from pccase
+                group by pccase_name
+                union
+                select width as pccase_name, count(width) as pccase_count, "width" as pccase_column
+                from pccase
+                group by pccase_name
+                union
+                select slots as pccase_name, count(slots) as pccase_count, "slots" as pccase_column
+                from pccase
+                group by pccase_name
+                ) as pc';
+        $stmt= $this->getEntityManager()->getConnection()->prepare($sql);
+        return $stmt->executeQuery()->fetchAllAssociative();
+
+    }
+
     public function save(PCCase $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

@@ -88,9 +88,17 @@ class Countries
     #[ORM\OneToMany(mappedBy: 'country', targetEntity: States::class)]
     private Collection $states;
 
+    #[ORM\OneToMany(mappedBy: 'country', targetEntity: User::class)]
+    private Collection $users;
+
+    #[ORM\OneToMany(mappedBy: 'country', targetEntity: Order::class)]
+    private Collection $orders;
+
     public function __construct()
     {
         $this->states = new ArrayCollection();
+        $this->users = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -254,9 +262,9 @@ class Countries
         return $this;
     }
 
-    public function getTimezones(): ?string
+    public function getTimezones()
     {
-        return $this->timezones;
+        return json_decode($this->timezones);
     }
 
     public function setTimezones(?string $timezones): self
@@ -398,6 +406,66 @@ class Countries
             // set the owning side to null (unless already changed)
             if ($state->getCountry() === $this) {
                 $state->setCountry(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->setCountry($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getCountry() === $this) {
+                $user->setCountry(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Order>
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): self
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders->add($order);
+            $order->setCountry($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): self
+    {
+        if ($this->orders->removeElement($order)) {
+            // set the owning side to null (unless already changed)
+            if ($order->getCountry() === $this) {
+                $order->setCountry(null);
             }
         }
 

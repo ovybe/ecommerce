@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProductInventoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductInventoryRepository::class)]
@@ -29,6 +31,14 @@ class ProductInventory
     #[ORM\ManyToOne(inversedBy: 'productInventories')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Locations $location = null;
+
+    #[ORM\OneToMany(mappedBy: 'loggedInv', targetEntity: InventoryLog::class, orphanRemoval: true)]
+    private Collection $inventoryLogs;
+
+    public function __construct()
+    {
+        $this->inventoryLogs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -94,4 +104,35 @@ class ProductInventory
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, InventoryLog>
+     */
+    public function getInventoryLogs(): Collection
+    {
+        return $this->inventoryLogs;
+    }
+
+    public function addInventoryLog(InventoryLog $inventoryLog): self
+    {
+        if (!$this->inventoryLogs->contains($inventoryLog)) {
+            $this->inventoryLogs->add($inventoryLog);
+            $inventoryLog->setLoggedInv($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInventoryLog(InventoryLog $inventoryLog): self
+    {
+        if ($this->inventoryLogs->removeElement($inventoryLog)) {
+            // set the owning side to null (unless already changed)
+            if ($inventoryLog->getLoggedInv() === $this) {
+                $inventoryLog->setLoggedInv(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

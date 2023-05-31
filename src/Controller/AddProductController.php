@@ -17,11 +17,13 @@ use App\Form\PCCaseType;
 use App\Form\PsuType;
 use App\Form\SsdType;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\Persistence\ManagerRegistry;
 use Monolog\DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
@@ -191,6 +193,8 @@ class AddProductController extends AbstractController
     #[Route('/admin/edit/product/{product_id}', name: 'app_edit_product')]
     public function editProduct(Request $request,ManagerRegistry $managerRegistry, EntityManagerInterface $entityManager, SluggerInterface $slugger, ValidatorInterface $validator,string $product_id): Response
     {
+        $fileSystem=new Filesystem();
+        // LOOK INTO WHY UID CHANGES EVEN IF PRODUCT TYPE DOESN'T
         $types_arr=array(
             'Gpu'=>'GPU',
             'Cpu'=>'CPU',
@@ -201,28 +205,50 @@ class AddProductController extends AbstractController
             'PCCase' => 'PC Case',
             'Cooler' => 'Cooler',
         );
+        // GET PRODUCT
         $product=$managerRegistry->getRepository(Product::class)->findOneBy(['uid'=>$product_id]);
         //dd($product);
+
+        // IF PRODUCT DOESN'T EXIST RETURN 404
         if(!$product){
             return new Response('Product not found',404);
         }
+        // ELSE GET ALL LOCATIONS
         $locations=$managerRegistry->getRepository(Locations::class)->findAll();
         $productInvs=$product->getProductInventories();
-        $productImgs=$product->getProductImages();
+        $productUploadedImgs=new ArrayCollection();
+        $oldProductImgs=clone ($product->getProductImages());
+        $productImgs=new ArrayCollection();
         //dd(count($productImgs));
-        foreach ($productImgs as $pi){
-            dd($pi);
-            $prodimg= new File($pi->getPath(),false);
-
+        // TODO: LOOK INTO FETCHING PI
+        #TODO: FIX UPLOADED IMAGE MESS
+        #dd($productUploadedImgs);
+//        $product->getProductImages()->clear();
+//        $entityManager->persist($product);
+//        $entityManager->flush();
+//        dd($product);
+        #$entityManager->flush();
+        #dd($oldProductImgs->re);
+        #dd($oldProductImgs);
+        #TODO: FIX VALIDATION, AS IT BYPASSES IT
+        foreach ($oldProductImgs as $pi){
+            $prodimg= new File($this->getParameter('showcases_directory').'/'.$pi->getPath(),true);
+            $productUploadedImgs->add($prodimg);
         }
-        $maxProd=5-$productImgs->count();
+        #dd($product->getProductImages());
+        // GET REMAINING NOT USED PRODUCT IMAGES
+        $maxProd=5-$oldProductImgs->count();
         //dd();
+        // ADD THEM TO PRODUCTIMGS
         for ($i = 0; $i < $maxProd; $i++) {
             $prodimg = new File('', false);
-            $productImgs->add($prodimg);
+            $emptyProdImg= new ProductImages();
+            $productUploadedImgs->add($prodimg);
+            #$productImgs->add($emptyProdImg);
         }
         //dd($i);
         //dd($productImgs);
+        //TODO: LOOK INTO PRODUCT INVS, MAKE ALL LOCATION INVENTORIES FOR EACH PRODUCT INSTEAD OF ONLY ONES THAT THEY HAVE INV IN
         foreach($productInvs as $pi){
             for($j=0;$j<count($locations);$j++){
                 if($pi->getLocation()==$locations[$j]) {
@@ -232,16 +258,25 @@ class AddProductController extends AbstractController
             }
         }
         //dd($locations);
+        // Generate product inv list
         $productInvs=$this->generateProductInvList($locations);
+        // Add them to the product
         foreach($productInvs as $pi){ //
             $product->addProductInventory($pi);
         }
         //dd($productInvs);
         $prodClassName=$this->get_class_name(get_class($product));
+        $oldProduct=clone $product;
+        #dd($oldProduct);
+        #$oldProduct->setProductImages($productImgs);
         //$product->setProductImages();
         //dd($product)
+        // BUILD FORM AND ASSIGN VALUES
+        #dd($product->getProductImages());
+        #dd($product);
         $form=$this->createForm(EditProductType::class,[
             'name'=>$product->getName(),
+            'shortDesc'=>$product->getShortDesc(),
             'description'=>$product->getDescription(),
             'thumbnail'=>new File($product->getThumbnail()? : '' || $product->getThumbnail(),false),
             'price'=>$product->getPrice(),
@@ -249,25 +284,33 @@ class AddProductController extends AbstractController
             'seller'=>$product->getSeller(),
             'status'=>$product->getStatus(),
             'productInventories'=>$product->getProductInventories(),
-            'productImages'=>$productImgs,
+            'productImages'=>$productUploadedImgs,
             'product' => $product,
             strtolower($prodClassName) => $product]);
-
+        // IF IT'S A POST REQUEST
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
-            if ($form->isValid()) {
+            #dd("dies here??!");
+            if ($form->isSubmitted() && $form->isValid()) { // TODO: FIX THE SERIALIZATION ERROR CAUSED BY $form->isValid() from this if
                 // handle the form of your type
                 $task = $form->getData();
-                if($task['type']!=$product->getType()){
+                $needImgVerif=true;
+                // IF TYPE DIFFERS, MAKE A NEW PRODUCT OF SAID NEW TYPE
+
+                if(strtolower($task['type'])!=$product->getType()){
                     $newProduct=$this->buildProduct($task);
                     $newProduct->setUid($product->getUid());
+                    $needImgVerif=false;
                     //returns empty product if no fields were completed
                 }else
                     $newProduct=$product;
                 //dd($newProduct);
+                // validate the edited product
+//                dd("dies here");
                 $errors=$validator->validate($newProduct,null,['need_validation']);
                 //dd();
+
                 if(count($errors)>0){
                     // add groups to other forms
                     $product_form=$form->get(strtolower($product->getType()));
@@ -276,54 +319,127 @@ class AddProductController extends AbstractController
                         $product_form->get($error->getPropertyPath())->addError($tempError);
                     }
                 }
-                elseif($newProduct) {
-                    //dd($newProduct,$product);
-                    $entityManager->persist($newProduct);
+                elseif($newProduct) { // IF PRODUCT IS NOT A NULL OBJECT FROM NO FIELDS COMPLETED
+                    // CONVERT UPLOADEDFILE TO PRODUCTIMAGES
+                    $productImgsNew=new ArrayCollection();
+                    #dd($task['productImages']);
+                    foreach($task['productImages'] as $pi){
+                        $newPI=new ProductImages();
 
-                    //dd($task['productImages']);
-                    $newProdIm=$newProduct->getProductImages()->clear();
-                    foreach ($task['productImages'] as $prodImg) {
-                        if(!$newProduct->getProductImages()->contains($prodImg) && $prodImg instanceof UploadedFile){
-                            $this->handleImage($prodImg,$slugger,$newProduct,$entityManager);
+                        if($pi!=null){
+                            $uploadPath=$pi->getPathname();
+                            $newHash=sha1_file($uploadPath);
+                            $newPI->setHash($newHash)->setPath($uploadPath)->setProduct($newProduct);
                         }
-                        else{
-                            // STOPPED AT PRODUCT IMAGES GOTTA FIGURE OUT HOW TO HANDLE ALREADY UPLOADED IMAGES
-                            //$product->addProductImage($prodImg);
+                        $productImgsNew->add($newPI);
+                    }
+                    #dd($productImgsNew);
+                    #dd($newProduct->getProductImages());
+                    $newProduct->setProductImages($productImgsNew);
+//                    dd($newProduct,$task['productImages']);
+                    if($needImgVerif){
+                        // MAKE A NEW COLLECTION CONTAINING NEW IMGS
+                        #dd($productImgs);
+                        #dd($task['productImages']);
+                        #dd($product,$productImgs);
+                        foreach ($newProduct->getProductImages() as $index=>$uploadedImg) { #TODO: BEAUTIFY CODE, MOVE THIS TO A FUNCTION INSTEAD
+                            if($uploadedImg->getPath()!=null) {
+                                $verifyImg=true;
+                                $verifyImg = $oldProduct->checkImgAtIndex($uploadedImg, $index);
+                                if ($verifyImg) {
+                                    # If image already is uploaded, we set the path to it instead of reuploading it
+                                    $oldImg = $oldProduct->getProductImages()->get($index);
+                                    #dd($oldImg);
+                                    $uploadedImg->setPath($this->getParameter('showcases_directory').'/'.$oldImg->getPath());
+                                }else
+                                {
+                                    $this->handleSpecificImage($task['productImages'][$index],$slugger,$newProduct,$index,$entityManager);
+                                    $oldImg = $oldProduct->getProductImages()->get($index);
+                                    if($oldImg!=null)
+                                        $fileSystem->remove($this->getParameter('showcases_directory').'/'.$oldImg->getPath());
+                                }
+                                #dd($uploadedImg);
+                                $entityManager->persist($uploadedImg);
+                            }
+                        }
+                        foreach($newProduct->getProductImages() as $uploadedImg){
+                            if($uploadedImg->getPath()==null){
+                                $newProduct->getProductImages()->removeElement($uploadedImg);
+                                $uploadedImg->setProduct(null);
+                            }
+                        }
+                        #dd($newProduct->getProductImages());
+                    }else{
+                        foreach($newProduct->getProductImages() as $index=>$uploadedImg){
+                            if($uploadedImg->getPath()!=null){
+                                $this->handleSpecificImage($task['productImages'][$index],$slugger,$newProduct,$index,$entityManager);
+                            }
+                            else{
+                                $newProduct->getProductImages()->removeElement($uploadedImg);
+                                $uploadedImg->setProduct(null);
+                            }
                         }
                     }
+                    #dd($newProduct);
+                    #dd('e',$newProduct->getProductImages());
+                    # Verifies image, removes old ones
 //                        dd($product);
-                    $newCol=$newProduct->getProductInventories();
-                    $newCol->clear();
-                    foreach ($task['productInventories'] as $pi) {
-                        if ($pi->getQuantity() != null) {
-                            $pi->setProduct($newProduct);
-                            $newCol->add($pi);
-                            $entityManager->persist($pi);
+//                    $newCol=$newProduct->getProductInventories();
+//                    dd($newCol);
+//                    $newCol->clear();
+                    #dd($newProduct->getProductInventories());
+                    foreach ($newProduct->getProductInventories() as $pi) {
+                        $quantity=$pi->getQuantity();
+                        if ($quantity == null || $quantity == 0) {
+                            $newProduct->removeProductInventory($pi);
+                            $entityManager->remove($pi);
                             // STOPPED AT VENTS
                         }
-                    }
-                    $product->setProductInventories($newCol);
-                    // ADD BROCHURE FUNCTION HERE
-                    if($form->get('product')->get('thumbnail')!=$newProduct->getThumbnail())
-                        $fileToUpload = $form->get('product')->get('thumbnail')->getData();
-                        $newFilepath = $this->uploadFile($fileToUpload, $slugger);
-                        $product->setThumbnail($newFilepath);
-                    // add some checks for product fields
-                    //dd($newProduct,$product);
-                    if($newProduct!=$product){
-                    $entityManager->persist($newProduct);
-                    foreach($product->getProductInventories() as $pi)
-                        $entityManager->remove($pi); // CHECK RESTRICTIONS
-                    foreach($product->getProductImages() as $pim){
-                        if($pim){
-                            unlink($pim->getPath()); // NOT SURE IF CORRECT
-                            $entityManager->remove($pim);
+                        else{
+                            $pi->setProduct($newProduct);
+                            $pi->setModifiedAt(new \DateTimeImmutable());
+                            $entityManager->persist($pi);
                         }
                     }
-                    $entityManager->remove($product);
+                   # dd($newProduct);
+//                    $product->setProductInventories($newCol);
+                    #dd($newProduct->getProductInventories());
+                    #dd($newProduct->getThumbnail(),$task['thumbnail']);
+                    // ADD BROCHURE FUNCTION HERE
+                    if($task['thumbnail'] instanceof UploadedFile){
+                        $newThumbnailHash=sha1_file($task['thumbnail']->getRealPath());
+                        $thumbnailHash=sha1_file($this->getParameter('thumbnails_directory').'/'.$oldProduct->getThumbnail());
+                        # TODO: If you have more free time, turn the thumbnail into a ProductImages (to store hash)
+                        if($newThumbnailHash!=$thumbnailHash){
+                            $fileToUpload = $task['thumbnail'];
+                            $newFilepath = $this->uploadFile($fileToUpload, $slugger);
+                        }
+                        $product->setThumbnail($newFilepath);
                     }
-                    //dd($product);
+                    // add some checks for product fields
+                    //dd($newProduct,$product);
+                    if($newProduct->getId()!=$oldProduct->getId()){
+                        # IF NEW PRODUCT IS ACTUALLY A NEWLY CREATED ONE, REMOVE THE OLD PRODUCT
+                        # TODO: TEST IF ACTUALLY REMOVES IMAGES
+                        dd("happen");
+                        $entityManager->persist($newProduct);
+                        $newProduct->setUid($oldProduct);
+                        foreach($oldProduct->getProductInventories() as $pi)
+                            $entityManager->remove($pi); // CHECK RESTRICTIONS
+                        foreach($oldProduct->getProductImages() as $pim){
+                            if($pim->getPath()!=null){
+                                $fileSystem->remove($this->getParameter('showcases_directory').'/'.$pim->getPath()); // NOT SURE IF CORRECT
+                            }
+                            $entityManager->remove($pim);
+                        }
+                        $fileSystem->remove($this->getParameter('thumbnails_directory').'/'.$oldProduct->getThumbnail());
+                        $entityManager->remove($oldProduct);
+                    }
+                    #dd($newProduct);
+                    #dd($newProduct);
+                    #$entityManager->persist($newProduct);
                     $entityManager->flush();
+                    $this->redirectToRoute('app_edit_product',['product_id'=>$newProduct->getUid()]);
                 }
                 else{
                     //dd($product);
@@ -345,6 +461,8 @@ class AddProductController extends AbstractController
             'locations' => $locations,
 //            'session' => $session_arr,
             'productTypes' => $types_arr,
+            'product' => $product,
+            'productUploadedImages' => $productUploadedImgs,
         ]);
     }
     #[Route('/admin/delete/product/{product_id}', name: 'app_delete_product')]
@@ -428,6 +546,7 @@ class AddProductController extends AbstractController
 
         $product=$task[$temp];
         $product->setName($task['name']);
+        $product->setShortDesc($task['shortDesc']);
         $product->setDescription($task['description']);
         $product->setSKU($task['SKU']);
         $product->setSeller($task['seller']);
@@ -448,10 +567,19 @@ class AddProductController extends AbstractController
     private function handleImage(?UploadedFile $prodImg,SluggerInterface $slugger, Product $product, EntityManagerInterface $entityManager){
         if ($prodImg != null) {
             $newFilepath = $this->uploadFile($prodImg, $slugger, 'showcases_directory');
+            $newHash=sha1_file($this->getParameter('showcases_directory').'/'.$newFilepath);
             $tempProdImg = new ProductImages();
-            $tempProdImg->setPath($newFilepath)->setProduct($product);
+            $tempProdImg->setPath($newFilepath)->setHash($newHash)->setProduct($product);
             $product->addProductImage($tempProdImg);
             $entityManager->persist($tempProdImg);
+        }
+    }
+    private function handleSpecificImage(?UploadedFile $prodImg,SluggerInterface $slugger, Product $product,int $index, EntityManagerInterface $entityManager){
+        if ($prodImg != null) {
+            $newFilepath = $this->uploadFile($prodImg, $slugger, 'showcases_directory');
+            $newHash = sha1_file($this->getParameter('showcases_directory').'/'.$newFilepath);
+            $newProdImg=$product->getProductImages()->get($index);
+            $newProdImg->setPath($newFilepath)->setHash($newHash)->setProduct($product);
         }
     }
     private function recoverSession(Request $request,?array $productImgs): FormInterface{

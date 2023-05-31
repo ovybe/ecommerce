@@ -7,8 +7,8 @@
 {#{% else %}#}
 {#<li>Citire max.: {% if ssd.maxreading is empty %} N/A {% else %} {{ ssd.maxreading }} MB/s {% endif %}</li>#}
 {#{% endif %}#}
-{% if ssd.drivetype == "HDD" %}
-<p class="text-dark-emphasis" style="font-size:0.8rem">{{ ssd.ssdcapacity }} GB {{ ssd.maxreading }} RPM {{ ssd.buffer }} MB buffer</p>
+{% if card.drivetype == "HDD" %}
+<p class="text-dark-emphasis" style="font-size:0.8rem">{{ card.capacity }} GB {{ card.maxreading }} RPM {{ card.buffer }} MB buffer</p>
 {% else %}
-<p class="text-dark-emphasis" style="font-size:0.8rem">{{ ssd.ssdcapacity }} GB {{ ssd.maxreading }} MB/s max reading</p>
+<p class="text-dark-emphasis" style="font-size:0.8rem">{{ card.capacity }} GB {{ card.maxreading }} MB/s max reading</p>
 {% endif %}

@@ -1,0 +1,18 @@
+{% if app.user.country is not null %}
+    {% set timezone = app.user.country.timezones.0.zoneName%}
+        {% else %}
+    {% set timezone = "Europe/Bucharest" %}
+{% endif %}
+<tr>
+    <td class="d-table-cell pname text-truncate" style="max-width: 100px;">{{ payment.name }}</td>
+    <td class="d-table-cell text-truncate" style="max-width: 100px;">{{ payment.cardNumbers | slice(0,4) }}...</td>
+    <td class="d-table-cell text-truncate" style="max-width: 100px;">{{ payment.cardHolder }}</td>
+    <td class="d-table-cell text-truncate" style="max-width: 200px;">{{ payment.expirationDate | date("d/m/Y") }}</td>
+    <td class="d-table-cell text-truncate">{{ payment.createdAt | date("d/m/Y H:i",) }}</td>
+    <td class="d-table-cell text-truncate">{{ payment.modifiedAt | date("d/m/Y H:i",app.user.country.timezones.0.zoneName) }}</td>
+    <td>
+        <a class="btn btn-dark" href="{{ path('app_edit_payment',{id:payment.id}) }}"><i class="bi bi-pencil-square"></i></a>
+        <button type="button" class="btn btn-dark conbtnp" data-bs-toggle="modal"
+                data-id="{{ payment.id }}"
+                data-bs-target="#confirmModalPayment"><i class="bi bi-trash"></i></button></td>
+</tr>

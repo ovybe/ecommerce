@@ -1,4 +1,5 @@
 var prevValue;
+
 $(document).ready(function() {
     // you may need to change this code if you are not using Bootstrap Datepicker
     var typeSelect=$("select#edit_product_product_type");
@@ -29,22 +30,47 @@ $("span#addloc").on('click', function () {
 
     $(".location-box").append(newRow);
 });
+Quill.register("modules/resize",window.QuillResizeModule);
 var quill = new Quill('#editor', {
     modules: {
         toolbar: [
             [{ header: [1, 2, false] }],
             ['bold', 'italic', 'underline'],
-            ['image', 'code-block']
-        ]
+            ['link','image','video', 'code-block']
+        ],
+        resize:{
+            showSize:true,
+            locale:{}
+        },
+        imageDrop: true
     },
     placeholder: 'Compose an epic...',
     theme: 'snow'  // or 'bubble'
 });
+var quillShort = new Quill('#editor2', {
+    modules: {
+        toolbar: [
+            [{ header: [1, 2, false] }],
+            ['bold', 'italic', 'underline'],
+            ['link','image','video', 'code-block']
+        ],
+        resize:{
+            showSize:true,
+            locale:{}
+        },
+        imageDrop: true
+    },
+    placeholder: 'Compose an epic...',
+    theme: 'snow'  // or 'bubble'
+});
+quill.root.innerHTML=$('#edit_product_product_description').val();
+quillShort.root.innerHTML=$('#edit_product_product_shortDesc').val();
 
 
 $( "form" ).submit(function( event ) {
     // event.preventDefault();
     $("#edit_product_product_description").val(quill.root.innerHTML);
+    $("#edit_product_product_shortDesc").val(quillShort.root.innerHTML);
     console.log($("#edit_product_product_description").val());
     // return
 });
