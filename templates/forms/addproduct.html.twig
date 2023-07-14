@@ -16,16 +16,15 @@
 {% block body %}
         {{ form_start(form) }}
     <div class="d-flex">
-        <div class="col-1"></div>
-    <h4 class="text-body col-11 ps-5">Add Product</h4>
+        <div class="col-1 col-lg-2 ms-lg-5"></div>
+    <h4 class="text-body col-10">Add Product</h4>
     </div>
-    <div class="container d-flex">
+    <div id="container" data-type="{{ type }}" class="container d-flex flex-column-reverse flex-lg-row">
 
-
-
-            <div class="col-6 ms-5 container-fluid bg-white border p-5 pt-4 me-0 rounded">
+            <div class="col-12 col-lg-6 ms-lg-5 container-fluid bg-white border p-5 pt-4 me-0 rounded">
                 <div class="errors">
                     {{ form_errors(form) }}
+{#                    TODO: RENDER ALL ERRORS HERE INSTEAD#}
 {#                    {% for error in errors %}#}
 {#                    <li>{{ error.message }}</li>#}
 {#                    {% endfor %}#}
@@ -72,267 +71,44 @@
                         <input type="file" id="img_showcase" name="img_showcase" accept="image/*">
                     </div>
                     <div class="row input-group mb-3">
-                        <div class="row">
+                        <div class="col-6">
                             {{ form_errors(form.product.price) }}
+                        </div>
+                        <div class="col-6">
                             {{ form_errors(form.product.SKU) }}
                         </div>
-                        <div class="row">
+                        <div class="col-6">
                             {{ form_label(form.product.price) }}
+                        </div>
+                        <div class="col-6">
                             {{ form_label(form.product.SKU) }}
                         </div>
-                        <div class="row">
-                        {{ form_widget(form.product.price) }}
-                        {{ form_widget(form.product.SKU) }}
+                        <div class="col-6">
+                            {{ form_widget(form.product.price,{
+                                'attr':{
+                                    'class':'col-12',
+                                }
+                            }) }}
+                        </div>
+                        <div class="col-6">
+                        {{ form_widget(form.product.SKU,{
+                            'attr':{
+                                'class':'col-12',
+                            }
+                        }) }}
                         </div>
                     </div>
 
                     <div class="row input-group mb-3 ms-1">
                         <label for="category">Categorie</label>
-                        {{ form_errors(form.product.type) }}
-                        {{ form_widget(form.product.type) }}
+                        {{ form_errors(form.type) }}
+                        {{ form_widget(form.type) }}
                     </div>
                     <div class="row" id="formdiv">
-                        <div id="Gpu" name="Gpu" class="ms-3" style="display:none;">
-                            <div class="row input-group mb-3">
-                                {{ form_errors(form.gpu.interface) }}
-                                {{ form_label(form.gpu.interface) }}
-                                {{ form_widget(form.gpu.interface) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                {{ form_errors(form.gpu.clock) }}
-                                {{ form_label(form.gpu.clock) }}
-                                {{ form_widget(form.gpu.clock) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="memory">Memory Type</label>
-                                {{ form_errors(form.gpu.memory) }}
-                                {{ form_widget(form.gpu.memory) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="size">Memory Size (GB)</label>
-                                {{ form_errors(form.gpu.size) }}
-                                {{ form_widget(form.gpu.size) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="release">Release Date</label>
-                                {{ form_errors(form.gpu.releasedate) }}
-                                {{ form_widget(form.gpu.releasedate) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="series">Series</label>
-                                {{ form_errors(form.gpu.series) }}
-                                {{ form_widget(form.gpu.series) }}
-                            </div>
-                        </div>
-                        <div id="Cpu" name="Cpu" class="ms-3" style="display:none;">
-                            <div class="row input-group mb-3">
-                                <label for="socket">Socket</label>
-                                {{ form_errors(form.cpu.socket) }}
-                                {{ form_widget(form.cpu.socket) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="cpuseries">Series</label>
-                                {{ form_errors(form.cpu.series) }}
-                                {{ form_widget(form.cpu.series) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="cpucore">Core</label>
-                                {{ form_errors(form.cpu.core) }}
-                                {{ form_widget(form.cpu.core) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="frequency">Frequency (GHz)</label>
-                                {{ form_errors(form.cpu.frequency) }}
-                                {{ form_widget(form.cpu.frequency) }}
-                            </div>
-                        </div>
-                        <div id="Motherboard" name="Motherboard" class="ms-3" style="display:none">
-                            <div class="row input-group mb-3">
-                                <label for="format">Format</label>
-                                {{ form_errors(form.motherboard.format) }}
-                                {{ form_widget(form.motherboard.format) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="cpusocket">CPU Socket</label>
-                                {{ form_errors(form.motherboard.cpusocket) }}
-                                {{ form_widget(form.motherboard.cpusocket) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="chipset">Chipset Producer</label>
-                                {{ form_errors(form.motherboard.chipset) }}
-                                {{ form_widget(form.motherboard.chipset) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="modelchipset">Chipset Model</label>
-                                {{ form_errors(form.motherboard.modelchipset) }}
-                                {{ form_widget(form.motherboard.modelchipset) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="interface">Graphics Interface</label>
-                                {{ form_errors(form.motherboard.interface) }}
-                                {{ form_widget(form.motherboard.interface) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="memory">Memory Type</label>
-                                {{ form_errors(form.motherboard.memory) }}
-                                {{ form_widget(form.motherboard.memory) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="tech">Technology</label>
-                                {{ form_errors(form.motherboard.tech) }}
-                                {{ form_widget(form.motherboard.tech) }}
-                            </div>
-                        </div>
-                        <div id="Memory" name="Memory" class="ms-3" style="display:none;">
-                            <div class="row input-group mb-3">
-                                <label for="memtype">Memory Type</label>
-                                {{ form_errors(form.memory.memtype) }}
-                                {{ form_widget(form.memory.memtype) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="memcap">Capacity (GB)</label>
-                                {{ form_errors(form.memory.capacity) }}
-                                {{ form_widget(form.memory.capacity) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="memfreq">Frequency (MHz)</label>
-                                {{ form_errors(form.memory.frequency) }}
-                                {{ form_widget(form.memory.frequency) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="latency">CAS Latency (CL)</label>
-                                {{ form_errors(form.memory.latency) }}
-                                {{ form_widget(form.memory.latency) }}
-                            </div>
-                        </div>
-                        <div id="Ssd" name="Ssd" class="ms-3" style="display:none;">
-                            <div class="row input-group mb-3">
-                                <label for="ssdseries">Series</label>
-                                {{ form_errors(form.ssd.series) }}
-                                {{ form_widget(form.ssd.series) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="ssdinterface">Interface</label>
-                                {{ form_errors(form.ssd.interface) }}
-                                {{ form_widget(form.ssd.interface) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="ssdcap">Capacity (GB)</label>
-                                {{ form_errors(form.ssd.capacity) }}
-                                {{ form_widget(form.ssd.capacity) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="maxreading">Max Reading Speed</label>
-                                {{ form_errors(form.ssd.maxreading) }}
-                                {{ form_widget(form.ssd.maxreading) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="maxreading">Drive Type</label>
-                                {{ form_errors(form.ssd.drivetype) }}
-                                {{ form_widget(form.ssd.drivetype) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="buffer">Buffer</label>
-                                {{ form_errors(form.ssd.buffer) }}
-                                {{ form_widget(form.ssd.buffer) }}
-                            </div>
-                        </div>
-                        <div id="Psu" name="Psu" class="ms-3" style="display:none;">
-                            <div class="row input-group mb-3">
-                                <label for="power">Power</label>
-                                {{ form_errors(form.psu.power) }}
-                                {{ form_widget(form.psu.power) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="pfc">PFC</label>
-                                {{ form_errors(form.psu.pfc) }}
-                                {{ form_widget(form.psu.pfc) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="efficiency">Efficiency (%)</label>
-                                {{ form_errors(form.psu.efficiency) }}
-                                {{ form_widget(form.psu.efficiency) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="certification">Certification</label>
-                                {{ form_errors(form.psu.certification) }}
-                                {{ form_widget(form.psu.certification) }}
-                            </div>
-
-                            <div class="row input-group mb-3">
-                                <label for="certification">Vents</label>
-                                {{ form_errors(form.psu.vents) }}
-                                <table class="vents table table-hover"
-                                    data-index="{{ form.psu.vents|length > 0 ? form.psu.vents|last.vars.name + 1 : 0 }}"
-                                    data-prototype="<td>{{ form_widget(form.psu.vents.vars.prototype.type)|e('html_attr')}}</td><td>
-                                    {{ form_widget(form.psu.vents.vars.prototype.count)|e('html_attr') }}</td>"
-                                ><thead><tr><td>Name</td><td>Count</td></tr></thead><tbody></tbody></table>
-                                {{ form_widget(form.psu.vents) }}
-                                <button type="button" class="add_item_link" data-collection-holder-class="vents">Add a vent</button>
-                            </div>
-
-
-                        </div>
-                        <div id="Cooler" name="Cooler" class="ms-3" style="display:none;">
-                            <div class="row input-group mb-3">
-                                <label for="ctype">Cooling Type</label>
-                                {{ form_errors(form.cooler.ctype) }}
-                                {{ form_widget(form.cooler.ctype) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="cooling">Cooling</label>
-                                {{ form_errors(form.cooler.cooling) }}
-                                {{ form_widget(form.cooler.cooling) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="height">Height (mm)</label>
-                                {{ form_errors(form.cooler.height) }}
-                                {{ form_widget(form.cooler.height) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="ventsize">Size (mm)</label>
-                                {{ form_errors(form.cooler.size) }}
-                                {{ form_widget(form.cooler.size) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="vents">Vents</label>
-                                {{ form_errors(form.cooler.vents) }}
-                                {{ form_widget(form.cooler.vents) }}
-                            </div>
-                        </div>
-                        <div id="PCCase" name="PCCase" class="ms-3" style="display:none;">
-                            <div class="row input-group mb-3">
-                                <label for="casetype">Case Type</label>
-                                {{ form_errors(form.pccase.casetype) }}
-                                {{ form_widget(form.pccase.casetype) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="height">Height (mm)</label>
-                                {{ form_errors(form.pccase.height) }}
-                                {{ form_widget(form.pccase.height) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="diameter">Diameter (mm)</label>
-                                {{ form_errors(form.pccase.diameter) }}
-                                {{ form_widget(form.pccase.diameter) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="width">Width (mm)</label>
-                                {{ form_errors(form.pccase.width) }}
-                                {{ form_widget(form.pccase.width) }}
-                            </div>
-                            <div class="row input-group mb-3">
-                                <label for="slots">Slots</label>
-                                {{ form_errors(form.pccase.slots) }}
-                                {{ form_widget(form.pccase.slots) }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row col-3 mx-auto">
-                        {{ form_widget(form.submit) }}
+                        {% include 'forms/subform_template.html.twig' with {'subform': form.embeddedForm,'subform_id': 1} %}
                     </div>
             </div>
-            <div class="col-4 container-fluid ms-5 bg-white border p-5 pt-4 rounded">
+            <div class="col-12 col-lg-4 container-fluid ms-lg-5 bg-white border p-5 pt-4 rounded">
                 <div class="row input-group border-bottom">
                 <label for="status">Status Produs</label>
                     {{ form_errors(form.product.status) }}
@@ -373,8 +149,9 @@
                                         </table>
                 </div>
             </div>
+        {{ form_row(form._token) }}
     </div>
-    {{ form_end(form) }}
+    {{ form_end(form,{'render_rest':false}) }}
 {% endblock %}
 {% block javascriptsend %}
     <script src=" https://cdn.jsdelivr.net/npm/quill-image-drop-module@1.0.3/image-drop.min.js "></script>

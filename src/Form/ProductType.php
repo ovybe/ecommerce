@@ -77,21 +77,6 @@ class ProductType extends AbstractType
                 'attr' => ['id'=>'imgdiv'],
                 'required' => false,
             ])
-            ->add('type',ChoiceType::class,[
-                'choices' => [
-                    'Alege categoria produsului' => [
-                        'GPU' => 'Gpu',
-                        'CPU' => 'Cpu',
-                        'Motherboard' => 'Motherboard',
-                        'Memory' => 'Memory',
-                        'Storage' => 'Ssd',
-                        'PSU' => 'Psu',
-                        'PC Case' => 'PCCase',
-                        'Cooler' => 'Cooler',
-                    ],
-
-                ]
-            ])
             ->add('seller')
             ->add('price',null,[
                 'attr' => ['class'=>'rounded col-5 ms-0'],

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\Cities;
 use App\Entity\Contact;
 use App\Entity\Cooler;
@@ -13,6 +14,7 @@ use App\Entity\Locations;
 use App\Entity\Memory;
 use App\Entity\Motherboard;
 use App\Entity\PaymentDetail;
+use App\Entity\PCBuilderTemplate;
 use App\Entity\PCCase;
 use App\Entity\Product;
 use App\Entity\Psu;
@@ -27,6 +29,7 @@ use App\Form\UserType;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Monolog\DateTimeImmutable;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Persistence\ManagerRegistry;
@@ -39,6 +42,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Uid\Uuid;
+use function PHPUnit\Framework\arrayHasKey;
 
 class IndexController extends AbstractController
 {
@@ -51,52 +55,50 @@ class IndexController extends AbstractController
         $this->emailVerifier = $emailVerifier;
     }
 
-    public function getFilterArray($repository){
-        $classname = ucfirst($repository);
-        $obj=str_replace('Product',$classname,Product::class);
-        $filters_ungrouped=$this->entityManager->getRepository($obj)->getFilters();
+    public function groupFiltersByColumn($filters_ungrouped){
         $filters_grouped=[];
         foreach($filters_ungrouped as $filter){
-            $filters_grouped[$filter['filter_column']][]=[$filter['filter_name'],$filter['count_filter']];
+            $filters_grouped[$filter['option_name']][]=[$filter['option_value'],$filter['option_count']];
         }
         return $filters_grouped;
     }
+    public function getFilterArray(){
+        $filters_ungrouped=$this->entityManager->getRepository(Product::class)->getFilters();
+        return $this->groupFiltersByColumn($filters_ungrouped);
+
+    }
+    public function getFilterArrayByCategoryId($category_id){
+        $filters_ungrouped=$this->entityManager->getRepository(Product::class)->findFiltersByCategoryId($category_id);
+        return $this->groupFiltersByColumn($filters_ungrouped);
+    }
     public function getFilterArrayBySearch($value){
         $filters_ungrouped=$this->entityManager->getRepository(Product::class)->FindFiltersByValue($value);
-        $filters_grouped=[];
-        foreach($filters_ungrouped as $filter){
-            $filters_grouped[$filter['filter_column']][]=[$filter['filter_name'],$filter['count_filter']];
-        }
-        return $filters_grouped;
+        return $this->groupFiltersByColumn($filters_ungrouped);
     }
 
     #[Route('/index', name: 'app_index')]
     public function index(ManagerRegistry $doctrine): Response
     {
-
+        $products=[
+            1 =>[],
+            2 =>[],
+            3 =>[],
+            4 =>[],
+            5 =>[],
+            6 =>[],
+            7 =>[],
+            8 =>[],
+            9 =>[],
+        ];
         # TODO: Add filters like Emag for example (you tick a filter's box and it uses js to update the list or make it a form that adds onto the search/index and filters the already existent list like pcgarage)
-        $gpus = $this->entityManager->getRepository(Gpu::class)->findAllByStatusAndQuantity(1,12);
-
-        $cpus = $this->entityManager->getRepository(Cpu::class)->findAllByStatusAndQuantity(1,12);
-        $mems = $this->entityManager->getRepository(Memory::class)->findAllByStatusAndQuantity(1,12);
-        $mbs =  $this->entityManager->getRepository(Motherboard::class)->findAllByStatusAndQuantity(1,12);
-        $cases =  $this->entityManager->getRepository(PCCase::class)->findAllByStatusAndQuantity(1,12);
-        $psus = $this->entityManager->getRepository(Psu::class)->findAllByStatusAndQuantity(1,12);
-        $hdds = $this->entityManager->getRepository(Ssd::class)->findAllByStatusAndQuantitySsd(1,12,'HDD');
-        $ssds = $this->entityManager->getRepository(Ssd::class)->findAllByStatusAndQuantitySsd(1,12,'SSD');
-        $coolers = $this->entityManager->getRepository(Cooler::class)->findAllByStatusAndQuantity(1,12);
+        $all = $this->entityManager->getRepository(Product::class)->findAmountByStatusAndQuantity(1,12);
+        foreach($all as $product){
+            $products[$product->getCategory()->getId()][]=$product;
+        }
 
         return $this->render('index/index.html.twig', [
             'controller_name' => 'Index Page',
-            'gpus' => $gpus,
-            'cpus' => $cpus,
-            'mems' => $mems,
-            'mbs' => $mbs,
-            'cases' => $cases,
-            'psus' => $psus,
-            'ssds' => $ssds,
-            'hdds' => $hdds,
-            'coolers' => $coolers,
+            'products'=>$products,
         ]);
     }
     #[Route('/catalog/{value}', name: 'app_catalog')]
@@ -104,20 +106,33 @@ class IndexController extends AbstractController
     {
         if($value==null){
             $products=$this->entityManager->getRepository(Product::class)->findAll();
+            $filters = $this->getFilterArray();
+            $category_id = 0; # Means all categories
+        }else{
+            $category=$this->entityManager->getRepository(Category::class)->findOneBy(['category_name'=>$value]);
+            if(empty($category)){
+                return new Response('Category not found!', 404);
+            }
+            else {
+                $category_id = $category->getId();
+                $products = $this->entityManager->getRepository(Product::class)->findBy(['category' => $category_id]);
+                $filters = $this->getFilterArrayByCategoryId($category_id);
+            }
         }
-        else
-            $products=$this->entityManager->getRepository(Product::class)->findBy(['type'=>strtolower($value)]);
+
         if(empty($products)){
-            return new Response('Product category not found!',404);
+            return new Response('Products for category '.$value.' not found!',404);
         }
-        $filters = $this->getFilterArray($value);
+
+
         #dd($filters);
 
         return $this->render('index/search.html.twig', [
             'controller_name' => 'Search Product',
             'prods' => $products,
             'filters' => $filters,
-            'category' => $value,
+            'value' => $category_id,
+            'function' => 0,
         ]);
 //        else
 //            return new Response("No products found.", 404);
@@ -128,12 +143,14 @@ class IndexController extends AbstractController
         $products=$this->entityManager->getRepository(Product::class)->findAllByValue($value);
         $filters = $this->getFilterArrayBySearch($value);
 
+        # TODO: FIX FILTERS, EDIT, ADMIN MENU
 //        if($products)
             return $this->render('index/search.html.twig', [
                 'controller_name' => 'Search Product',
                 'prods' => $products,
                 'filters' => $filters,
-                'category' => '',
+                'value' => $value,
+                'function' => 1
             ]);
 //        else
 //            return new Response("No products found.", 404);
@@ -142,23 +159,15 @@ class IndexController extends AbstractController
     public function apply_filters(Request $request): Response
     {
         $filter_array = $request->get('filter_array');
-        $category = $request->get('category');
-        if($category=='') {
-            $obj = Product::class;
+        $function_used = $request->get('function');
+        $search_value = $request->get('value');
+
+        $obj = Product::class;
+        if(empty($filter_array)){
+            $filter_array=[];
         }
-        else {
-            $classname = ucfirst($category);
-            $obj = str_replace('Product', $classname, Product::class);
-        }
-        if($filter_array!=null)
-            if($obj==Product::class){
-                $products= $this->entityManager->getRepository($obj)->findByFilters($filter_array);
-                dd($products);
-            }
-            else
-                $products= $this->entityManager->getRepository($obj)->findBy($filter_array);
-        else
-            $products= $this->entityManager->getRepository($obj)->findAll();
+        $products= $this->entityManager->getRepository($obj)->findByFiltersAndFunctionValue($filter_array,$function_used,$search_value);
+
         $html = $this->renderView('element_templates/products_generate.html.twig',['prods'=>$products]);
 
         return $this->json($html);
@@ -183,6 +192,7 @@ class IndexController extends AbstractController
         $locations=$this->entityManager->getRepository(Locations::class)->findAll();
         $users=$this->entityManager->getRepository(User::class)->findAll();
         $discounts=$this->entityManager->getRepository(Discount::class)->findAll();
+        $templates=$this->entityManager->getRepository(PCBuilderTemplate::class)->findAll();
 
         return $this->render('index/admin.html.twig', [
             'controller_name' => 'Admin Page',
@@ -190,6 +200,7 @@ class IndexController extends AbstractController
             'locations'=> $locations,
             'users'=> $users,
             'discounts' => $discounts,
+            'templates' => $templates,
         ]);
     }
     #[Route('/user/settings', name: 'app_user_settings')]
@@ -198,11 +209,9 @@ class IndexController extends AbstractController
         $user = $this->getUser();
         $form=$this->createForm(UserType::class,$user);
         $contacts=$user->getContacts()->toArray();
-        $payments=$user->getPaymentDetails()->toArray();
+        $templates=$user->getPCBuilderTemplates()->toArray();
         $contact= new Contact();
         $contact_form=$this->createForm(ContactType::class,$contact);
-        $payment= new PaymentDetail();
-        $payment_form=$this->createForm(PaymentDetailType::class,$payment);
         $password_form=$this->createForm(UserChangePasswordFormType::class);
         $email_form=$this->createForm(UserChangeEmailFormType::class,$user);
 
@@ -250,9 +259,8 @@ class IndexController extends AbstractController
             'contact_form' => $contact_form,
             'email_form' => $email_form,
             'password_form' => $password_form,
-            'payment_form' => $payment_form,
             'contacts' => $contacts,
-            'payments' => $payments,
+            'templates' => $templates,
         ]);
     }
     private function sendVerificationMail(){
@@ -273,155 +281,187 @@ class IndexController extends AbstractController
         $this->sendVerificationMail();
         return new JsonResponse();
     }
-    #[Route('/user/add_contact', name: 'app_add_contact')]
-    public function add_contact(ManagerRegistry $doctrine, Request $request): Response
-    {
-        $user = $this->getUser();
-
-        $contact= new Contact();
-        $contact->setOwner($user);
-        $form=$this->createForm(ContactType::class,$contact);
-
-        if ($request->isMethod('POST')) {
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                // handle the form of your type
-                //dd($location);
-                //$entityManager->persist($user);
-                $this->entityManager->persist($contact);
-                $this->entityManager->flush();
-
-                $html = $this->renderView('element_templates/contact.html.twig',['contact'=>$contact]);
-
-                return $this->json($html);
-            }
-        }
-
-        return new Response("Invalid form",400);
-    }
-    #[Route('/user/add_payment', name: 'app_add_payment')]
-    public function add_payment(ManagerRegistry $doctrine, Request $request): Response
-    {
-        $user = $this->getUser();
-
-        $paymentDetail= new PaymentDetail();
-        $paymentDetail->setOwner($user);
-        $paymentDetail->setCreatedAt(new \DateTimeImmutable());
-        $paymentDetail->setModifiedAt(new \DateTimeImmutable());
-        $form=$this->createForm(PaymentDetailType::class,$paymentDetail);
-
-        if ($request->isMethod('POST')) {
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                // handle the form of your type
-                //dd($location);
-                //$entityManager->persist($user);
-                $this->entityManager->persist($paymentDetail);
-                $this->entityManager->flush();
-
-                $html = $this->renderView('element_templates/payment_detail.html.twig',['payment'=>$paymentDetail]);
-
-                return $this->json($html);
-            }
-        }
-
-        return new Response("Invalid form",400);
-    }
-    #[Route('/user/edit_contact/{id}', name: 'app_edit_contact')]
-    public function edit_contact(ManagerRegistry $doctrine, Request $request, int $id): Response
-    {
-        $user = $this->getUser();
-
-        $contacts= $user->getContacts()->toArray();
-        $contact=null;
-        foreach($contacts as $c){
-            if($c->getId()==$id){
-                $contact=$c;
-                break;
-            }
-        }
-        if(!$contact){
-            return new Response("Contact not found",404);
-        }
-        $form=$this->createForm(ContactType::class,$contact);
-
-        if ($request->isMethod('POST')) {
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                // handle the form of your type
-                //dd($location);
-                //$entityManager->persist($user);
-                $this->entityManager->flush();
-            }
-                return $this->redirectToRoute('app_user_settings',[],302);
-        }
-
-        return $this->render('forms/contact.html.twig', [
-            'controller_name' => 'Edit Contact',
-            'form' => $form,
-        ]);
-    }
-    #[Route('/user/edit_payment/{id}', name: 'app_edit_payment')]
-    public function edit_payment(ManagerRegistry $doctrine, Request $request, int $id): Response
-    {
-        $user = $this->getUser();
-
-        $payments= $user->getPaymentDetails()->toArray();
-        $payment=null;
-        foreach($payments as $p){
-            if($p->getId()==$id){
-                $payment=$p;
-                break;
-            }
-        }
-        if(!$payment){
-            return new Response("Payment detail not found",404);
-        }
-        $form=$this->createForm(PaymentDetailType::class,$payment);
-
-        if ($request->isMethod('POST')) {
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                // handle the form of your type
-                //dd($location);
-                //$entityManager->persist($user);
-                $payment->setModifiedAt(new \DateTimeImmutable());
-                $this->entityManager->flush();
-            }
-            return $this->redirectToRoute('app_user_settings',[],302);
-        }
-
-        return $this->render('forms/payment.html.twig', [
-            'controller_name' => 'Edit Payment Details',
-            'form' => $form,
-        ]);
-    }
-    #[Route('/user/delete/contact/{id}', name: 'app_delete_contact')]
-    public function delete_contact(Request $request, EntityManagerInterface $entityManager, int $id){
+//    #[Route('/user/add_contact', name: 'app_add_contact')]
+//    public function add_contact(ManagerRegistry $doctrine, Request $request): Response
+//    {
+//        $user = $this->getUser();
+//
+//        $contact= new Contact();
+//        $contact->setOwner($user);
+//        $form=$this->createForm(ContactType::class,$contact);
+//
+//        if ($request->isMethod('POST')) {
+//            $form->handleRequest($request);
+//            if ($form->isSubmitted() && $form->isValid()) {
+//                // handle the form of your type
+//                //dd($location);
+//                //$entityManager->persist($user);
+//                $this->entityManager->persist($contact);
+//                $this->entityManager->flush();
+//
+//                $html = $this->renderView('element_templates/contact.html.twig',['contact'=>$contact]);
+//
+//                return $this->json($html);
+//            }
+//        }
+//
+//        return new Response("Invalid form",400);
+//    }
+//    #[Route('/user/add_payment', name: 'app_add_payment')]
+//    public function add_payment(ManagerRegistry $doctrine, Request $request): Response
+//    {
+//        $user = $this->getUser();
+//
+//        $paymentDetail= new PaymentDetail();
+//        $paymentDetail->setOwner($user);
+//        $paymentDetail->setCreatedAt(new \DateTimeImmutable());
+//        $paymentDetail->setModifiedAt(new \DateTimeImmutable());
+//        $form=$this->createForm(PaymentDetailType::class,$paymentDetail);
+//
+//        if ($request->isMethod('POST')) {
+//            $form->handleRequest($request);
+//            if ($form->isSubmitted() && $form->isValid()) {
+//                // handle the form of your type
+//                //dd($location);
+//                //$entityManager->persist($user);
+//                $this->entityManager->persist($paymentDetail);
+//                $this->entityManager->flush();
+//
+//                $html = $this->renderView('element_templates/payment_detail.html.twig',['payment'=>$paymentDetail]);
+//
+//                return $this->json($html);
+//            }
+//        }
+//
+//        return new Response("Invalid form",400);
+//    }
+//    #[Route('/user/edit_contact/{id}', name: 'app_edit_contact')]
+//    public function edit_contact(ManagerRegistry $doctrine, Request $request, int $id): Response
+//    {
+//        $user = $this->getUser();
+//
+//        $contacts= $user->getContacts()->toArray();
+//        $contact=null;
+//        foreach($contacts as $c){
+//            if($c->getId()==$id){
+//                $contact=$c;
+//                break;
+//            }
+//        }
+//        if(!$contact){
+//            return new Response("Contact not found",404);
+//        }
+//        $form=$this->createForm(ContactType::class,$contact);
+//
+//        if ($request->isMethod('POST')) {
+//            $form->handleRequest($request);
+//            if ($form->isSubmitted() && $form->isValid()) {
+//                // handle the form of your type
+//                //$entityManager->persist($user);
+//                $this->entityManager->flush();
+//            }
+//                return $this->redirectToRoute('app_user_settings',[],302);
+//        }
+//
+//        return $this->render('forms/contact.html.twig', [
+//            'controller_name' => 'Edit Contact',
+//            'form' => $form,
+//        ]);
+//    }
+//    #[Route('/user/edit_payment/{id}', name: 'app_edit_payment')]
+//    public function edit_payment(ManagerRegistry $doctrine, Request $request, int $id): Response
+//    {
+//        $user = $this->getUser();
+//
+//        $payments= $user->getPaymentDetails()->toArray();
+//        $payment=null;
+//        foreach($payments as $p){
+//            if($p->getId()==$id){
+//                $payment=$p;
+//                break;
+//            }
+//        }
+//        if(!$payment){
+//            return new Response("Payment detail not found",404);
+//        }
+//        $form=$this->createForm(PaymentDetailType::class,$payment);
+//
+//        if ($request->isMethod('POST')) {
+//            $form->handleRequest($request);
+//            if ($form->isSubmitted() && $form->isValid()) {
+//                // handle the form of your type
+//
+//                //$entityManager->persist($user);
+//                $payment->setModifiedAt(new \DateTimeImmutable());
+//                $this->entityManager->flush();
+//            }
+//            return $this->redirectToRoute('app_user_settings',[],302);
+//        }
+//
+//        return $this->render('forms/payment.html.twig', [
+//            'controller_name' => 'Edit Payment Details',
+//            'form' => $form,
+//        ]);
+//    }
+//    #[Route('/user/delete/contact/{id}', name: 'app_delete_contact')]
+//    public function delete_contact(Request $request, EntityManagerInterface $entityManager, int $id){
+//        if ($request->isMethod('DELETE')) {
+//            $contact=$entityManager->getRepository(Contact::class)->findOneBy(['id'=>$id]);
+//            if($contact){
+//                $entityManager->remove($contact);
+//                $entityManager->flush();
+//                return $this->json(['id'=>$id]);
+//            }
+//            else return new Response("Contact not found", 404);
+//        }
+//        else return new Response("Request type not correct", 400);
+//
+//    }
+    #[Route('/user/delete/template/{id}', name: 'app_user_delete_template')]
+    public function user_delete_template(Request $request, EntityManagerInterface $entityManager, string $id){
         if ($request->isMethod('DELETE')) {
-            $contact=$entityManager->getRepository(Contact::class)->findOneBy(['id'=>$id]);
-            if($contact){
-                $entityManager->remove($contact);
+            $template=$entityManager->getRepository(PCBuilderTemplate::class)->findOneBy(["owningUser"=>$this->getUser()->getId(),'uid'=>$id]);
+            if($template){
+                $entityManager->remove($template);
                 $entityManager->flush();
                 return $this->json(['id'=>$id]);
             }
-            else return new Response("Contact not found", 404);
+            else return new Response("Template not found", 404);
         }
         else return new Response("Request type not correct", 400);
 
     }
-    #[Route('/user/delete/payment/{id}', name: 'app_delete_payment')]
-    public function delete_payment(Request $request, EntityManagerInterface $entityManager, int $id){
-        if ($request->isMethod('DELETE')) {
-            $payment=$entityManager->getRepository(PaymentDetail::class)->findOneBy(['id'=>$id]);
-            if($payment){
-                $entityManager->remove($payment);
-                $entityManager->flush();
-                return $this->json(['id'=>$id]);
+    #[Route('/admin/toggle/suspension/{id}', name: 'app_admin_toggle_suspend')]
+    public function toggle_suspension(Request $request, EntityManagerInterface $entityManager, int $id){
+        $userRepo = User::class;
+        $suspendedRole = 'ROLE_SUSPENDED';
+        if($this->getUser()->isAdmin()){
+            $user=$entityManager->getReference($userRepo,$id);
+            $userRoles=$user->getRoles();
+            // CHECK FOR SUSPENDED ROLE
+            if (($key = array_search($suspendedRole, $userRoles)) !== false) {
+                unset($userRoles[$key]);
+            }else{
+                $userRoles[]=$suspendedRole;
             }
-            else return new Response("Payment not found", 404);
+            $user->setRoles($userRoles);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_admin');
+        }else return new Response("User must be an administrator", 403);
+    }
+
+    #[Route('/admin/delete/template/{id}', name: 'app_admin_delete_template')]
+    public function admin_delete_template(Request $request, EntityManagerInterface $entityManager, string $id){
+        if ($this->getUser()->isAdmin()) {
+            $template=$entityManager->getRepository(PCBuilderTemplate::class)->findOneBy(['uid'=>$id]);
+            if($template){
+                $entityManager->remove($template);
+                $entityManager->flush();
+                return $this->redirectToRoute('app_admin');
+            }
+            else return new Response("Template not found", 404);
         }
-        else return new Response("Request type not correct", 400);
+        else return new Response("User is not an admin", 403);
 
     }
 

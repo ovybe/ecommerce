@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ template.templateName }}{% endblock %}
+
+{#{% block navhome %}#}
+{#    active#}
+{#{% endblock %}#}
+{% block bodystyle %}
+    style="background-color: black"
+{% endblock %}
+{% block headerdiv %}{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" href="/css/shop.css">{% endblock %}
+
+{% block body %}
+    <div class="container bg-white rounded border mt-3">
+        <a href="/">Home</a>/<a href="/">Template</a>/<span href="/template/{{ template.uid }}">{{ template.templateName }}</span>
+        <h3 class="mb-0">{{ template.templateName }}</h3>
+        <p>UID: <span id="uid">{{ template.uid }}</span></p>
+        <div class="row mt-3">
+{#            <div  class="col-12 table-responsive">#}
+{#                <h4>Specifications</h4>#}
+{#                {% use "index/product_template.html.twig" %}#}
+{#                <ul class="list-group">#}
+{#                    {{ block(product.category.categoryName|lower~'info') }}#}
+{#                </ul>#}
+{#            </div>#}
+            <div class="cart-btn mb-1">
+                <button class="btn btn-success col-12 col-lg-4" id="add-all-to-cart">Add all to cart</button>
+            </div>
+            <div class="row items">
+                {%  for item in template.cartItems %}
+                        {% include 'element_templates/card.html.twig' with {'card': item.product} %}
+                {% endfor %}
+            </div>
+            <div  class="col-12">
+                <h4>Full Description</h4>
+                <div>
+                    {{ template.templateDescription | raw }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascriptsend %}
+<script src="/js/template_cart.js"></script>
+{% endblock %}

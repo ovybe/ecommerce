@@ -5,6 +5,7 @@ use App\Entity\Order;
 use App\Factory\OrderFactory;
 use App\Service\CartSessionStorage;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 /**
 * Class CartManager
@@ -28,20 +29,28 @@ class CartManager
     private $entityManager;
 
     /**
+     * @var Security
+     */
+    private $security;
+
+    /**
     * CartManager constructor.
     *
     * @param CartSessionStorage $cartStorage
     * @param OrderFactory $orderFactory
     * @param EntityManagerInterface $entityManager
+    * @param Security $security
     */
     public function __construct(
         CartSessionStorage $cartStorage,
         OrderFactory $orderFactory,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        Security $security,
     ) {
         $this->cartSessionStorage = $cartStorage;
         $this->cartFactory = $orderFactory;
         $this->entityManager = $entityManager;
+        $this->security = $security;
     }
 
     /**
@@ -56,6 +65,12 @@ class CartManager
         if (!$cart) {
             $cart = $this->cartFactory->create();
         }
+//        if ($cart->getUser()==null) {
+//            $user = $this->security->getUser();
+//            if ($user != null) {
+//                $cart->setUser($user);
+//            }
+//        }
 
         return $cart;
     }

@@ -3,4 +3,5 @@
 {#<li>GPU Boost clock: {% if gpu.clock is empty %} N/A {% else %} {{ gpu.clock }} MHz {% endif %}</li>#}
 {#<li>Tip memorie: {% if gpu.gpumemory is empty %} N/A {% else %} {{ gpu.gpumemory }} {% endif %}</li>#}
 {#<li>Dimensiune memorie: {% if gpu.gpusize is empty %} N/A {% else %} {{ gpu.gpusize }} GB {% endif %}</li>#}
-<p class="text-dark-emphasis" style="font-size:0.8rem">{{ card.clock }} MHz {{ card.size }} GB {{ card.memory }}</p>
+{#<p class="text-dark-emphasis" style="font-size:0.8rem">{{ card.clock }} MHz {{ card.size }} GB {{ card.memory }}</p>#}
+<p class="text-dark-emphasis" style="font-size:0.8rem">{{ card[1].optionValue }} MHz {{ card[3].optionValue }} GB {{ card[2].optionValue }}</p>

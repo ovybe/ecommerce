@@ -11,9 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ORM\InheritanceType('JOINED')]
-#[ORM\DiscriminatorColumn(name: 'discr', type: 'integer')]
-#[ORM\DiscriminatorMap([0 => Product::class, 1 => Gpu::class, 2 => Cpu::class, 3 => Memory::class, 4 => Motherboard::class, 5 => Ssd::class, 6 => Psu::class, 7 => PCCase::class, 8 => Cooler::class])]
 class Product
 {
     #[ORM\Id]
@@ -33,9 +30,6 @@ class Product
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $thumbnail = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $type = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $seller = null;
 
@@ -54,25 +48,26 @@ class Product
     #[ORM\ManyToMany(targetEntity: Locations::class, inversedBy: 'products')]
     private Collection $locations;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductInventory::class)]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductInventory::class,cascade: ['remove'], orphanRemoval: true)]
     private Collection $productInventories;
 
     #[ORM\Column(type: Types::GUID)]
     private ?string $uid = null;
 
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: CartItem::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: CartItem::class,cascade: ['remove'], orphanRemoval: true)]
     private Collection $cartItems;
 
     #[ORM\Column(type: Types::TEXT, length:300, nullable: true)]
     private ?string $shortDesc = null;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Option::class)]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Option::class,cascade: ['remove'], orphanRemoval: true)]
     private Collection $options;
 
     #[ORM\ManyToOne(inversedBy: 'product')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
+
 
     public function __construct()
     {
@@ -138,18 +133,6 @@ class Product
         return $this;
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getSeller(): ?string
     {
         return $this->seller;
@@ -184,6 +167,35 @@ class Product
         $this->price = $price;
 
         return $this;
+    }
+    public function getScore(): float
+    {
+//        GPU SCORE = VRAM + speed
+//        CPU SCORE = CORE NUMBERS + speed (GHz)
+//        RAM SCORE = RAM NUMBER (GB)
+//        HDD SCORE = SPACE (GB) + speed
+//        SSD SCORE = SPACE (GB) + speed
+//        MB SCORE = SLOT NUMBER
+        $score_calculation=[
+          "gpu" => ['memory_size','clock'],
+          "cpu" => ['core_number','frequency'],
+          "memory" => ['memory_size','mem_frequency'],
+          "hdd" => ['size','reading_speed'],
+          "ssd" => ['size','reading_speed'],
+//          "motherboard" =>
+        ];
+        $category_used=$this->getCategory()->getCategoryName();
+        $score = 0;
+        if(array_key_exists($category_used,$score_calculation)){
+            foreach($this->getOptions() as $option){
+                if(in_array($option->getOptionName(),$score_calculation[$category_used])){
+                    $score+=$option->getOptionValue();
+                }
+            }
+
+            $score/=count($score_calculation[$category_used]);
+        }
+        return $score;
     }
 
     /**
@@ -423,6 +435,16 @@ class Product
 
         return $this;
     }
+    public function findOptions(array $option_arr){
+        $foundOptions=array();
+        foreach($this->options as $option){
+            $option_name=$option->getOptionName();
+            if(in_array($option_name,$option_arr)){
+                $foundOptions[$option_name]=$option;
+            }
+        }
+        return $foundOptions;
+    }
 
     public function getCategory(): ?Category
     {
@@ -435,4 +457,5 @@ class Product
 
         return $this;
     }
+
 }

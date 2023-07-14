@@ -1,4 +1,4 @@
-{% set card_type = card.type | lower %}
+{% set card_type = card.category.categoryName | lower %}
 {% set card_template = "element_templates/"~card_type~"_card.html.twig" %}
 {#<div class="card bg-dark text-light bg-opacity-50" style="width: 16rem;">#}
 {#    <img src="{% if card.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ card.thumbnail }}{% endif %}" class="card-img-top" alt="...">#}
@@ -13,7 +13,7 @@
 {#    <button class="btn btn-success purchasebtn" data-uid="{{ card.uid }}"><i class="bi bi-cart-plus-fill"></i> Add To Cart</button>#}
 {#</div>#}
 
-<div class="col-md-3 col-sm-6">
+<div class="col-6 col-md-3 col-sm-6">
     <div class="product-grid">
         <div class="product-image">
             <a href="{{ path('app_product',{id:card.uid}) }}">
@@ -22,7 +22,7 @@
             </a>
             <ul class="social">
                 <li><a href="{{ path('app_product',{id:card.uid}) }}" data-tip="View Page"><i class="bi bi-search"></i></a></li>
-                <li><a href="" data-tip="Add to Wishlist"><i class="bi bi-basket3"></i></a></li>
+{#                <li><a href="" data-tip="Add to Wishlist"><i class="bi bi-basket3"></i></a></li>#}
                 {% if is_granted("ROLE_ADMIN") %}
                 <li><a href="{{ path('app_edit_product',{product_id:card.uid}) }}" data-tip="Edit Product"><i class="bi bi-pencil"></i></a></li>
                 {% endif %}
@@ -40,7 +40,7 @@
         <div class="product-content">
             <h3 class="title"><a href="{{ path('app_product',{id:card.uid}) }}">{{ card.name }}</a></h3>
 
-            {% include card_template with {card : card}  %}
+            {% include card_template with {card : card.options}  %}
 {#            search needs it a bit different, either change the findby for index or make a similar card for search#}
             <div class="price">{{ card.price }} RON
 {#                <span>$20.00</span>#}

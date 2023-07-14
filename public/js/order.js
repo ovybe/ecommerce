@@ -13,6 +13,22 @@ $(document).ready(function() {
             }
         });
     });
+    $('.order-item').on('click','a.order-rbtn', function(event) {
+        console.log("happen");
+        // event.preventDefault();
+        // console.log("delete");
+        $.ajax({
+            url: '/remove_from_cart/'+$(this).data('id'),
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                console.log(data);
+                location.reload();
+
+            }
+        });
+    });
     $('.q-div').on('click', 'button.q-dec', function () {
         var div = $(this).parent();
         $.ajax({

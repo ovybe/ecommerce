@@ -5,67 +5,66 @@
 {#        <h5 class="card-title">{{ product.title }}</h5>#}
 {#        <p class="card-text"><ul>#}
             {% block memoryinfo %}
-                <li class="list-group-item">Tip:{{ product.memtype }}</li>
-                <li class="list-group-item">Capacitate: {{ product.capacity }} GB</li>
-                <li class="list-group-item">Frecventa: {{ product.frequency }} MHz</li>
-                <li class="list-group-item">Latenta CAS: {{ product.latency }} CL</li>
+                <li class="list-group-item">Type: {{ product.options[0].optionValue }}</li>
+                <li class="list-group-item">Memory Size: {{ product.options[1].optionValue }} GB</li>
+                <li class="list-group-item">Frequency: {{ product.options[2].optionValue }} MHz</li>
+                <li class="list-group-item">CAS Latency: {{ product.options[3].optionValue }} CL</li>
             {% endblock %}
             {% block gpuinfo %}
-                <li class="list-group-item">Interfata: {{ product.interface }}</li>
-                <li class="list-group-item">Seria: {{ product.series }}</li>
-                <li class="list-group-item">GPU Boost clock: {{ product.clock }} MHz</li>
-                <li class="list-group-item">Tip memorie: {{ product.memory }}</li>
-                <li class="list-group-item">Dimensiune memorie: {{ product.size }} GB</li>
+                <li class="list-group-item">Interface: {{ product.options[0].optionValue }}</li>
+                <li class="list-group-item">GPU Boost clock: {{ product.options[1].optionValue }} MHz</li>
+                <li class="list-group-item">Memory Type: {{ product.options[2].optionValue }}</li>
+                <li class="list-group-item">Memory Size: {{ product.options[3].optionValue }} GB</li>
+                <li class="list-group-item">Series: {{ product.options[4].optionValue }} </li>
             {% endblock %}
             {% block cpuinfo %}
-                <li class="list-group-item">Socket: {{ product.socket }}</li>
-                <li class="list-group-item">Seria: {{ product.series }}</li>
-                <li class="list-group-item">Nucleu: {{ product.core }}</li>
-                <li class="list-group-item">Frecventa: {{ product.frequency }} GHz</li>
+                <li class="list-group-item">Socket: {{ product.options[0].optionValue }}</li>
+                <li class="list-group-item">Series: {{ product.options[1].optionValue }}</li>
+                <li class="list-group-item">Core: {{ product.options[2].optionValue }}</li>
+                <li class="list-group-item">Frequency: {{ product.options[3].optionValue }} GHz</li>
             {% endblock %}
             {% block motherboardinfo %}
-                <li class="list-group-item">Format: {{ product.format }}</li>
-                <li class="list-group-item">Soclu procesor: {{ product.cpusocket }}</li>
-                <li class="list-group-item">Producator chipset: {{ product.chipset }}</li>
-                <li class="list-group-item">Model chipset: {{ product.modelchipset }}</li>
-                <li class="list-group-item">Interfata grafica: {{ product.interface }}</li>
-                <li class="list-group-item">Tip Memorie: {{ product.memory }}</li>
-                <li class="list-group-item">Tehnologie: {{ product.tech }}</li>
+                <li class="list-group-item">Format: {{ product.options[0].optionValue }}</li>
+                <li class="list-group-item">Processor Socket: {{ product.options[1].optionValue }}</li>
+                <li class="list-group-item">Chipset Producer: {{ product.options[2].optionValue }}</li>
+                <li class="list-group-item">Chipset Model: {{ product.options[3].optionValue }}</li>
+                <li class="list-group-item">Graphical Interface: {{ product.options[4].optionValue }}</li>
+                <li class="list-group-item">Memory Type: {{ product.options[5].optionValue }}</li>
+                <li class="list-group-item">Technology: {{ product.options[6].optionValue }}</li>
             {% endblock %}
             {% block ssdinfo %}
-                <li class="list-group-item">Seria: {{ product.series }}</li>
-                <li class="list-group-item">Interfata: {{ product.interface }}</li>
-                <li class="list-group-item">Capacitate: {{ product.capacity}} TB</li>
-                <li class="list-group-item">Citire max.: {{ product.maxreading }} MB/s</li>
+                <li class="list-group-item">Series: {{ product.options[0].optionValue }}</li>
+                <li class="list-group-item">Interface: {{ product.options[1].optionValue }}</li>
+                <li class="list-group-item">Size: {{ product.options[2].optionValue}} TB</li>
+                <li class="list-group-item">Max. Reading: {{ product.options[3].optionValue }} MB/s</li>
             {% endblock %}
             {% block hddinfo %}
-                <li class="list-group-item">Seria: {{ product.series }}</li>
-                <li class="list-group-item">Interfata: {{ product.interface }}</li>
-                <li class="list-group-item">Capacitate: {{ product.capacity }} TB</li>
-                <li class="list-group-item">Buffer: {{ product.buffer }} MB</li>
-                <li class="list-group-item">Viteza: {{ product.maxreading }} RPM</li>
+                <li class="list-group-item">Series: {{ product.options[0].optionValue }}</li>
+                <li class="list-group-item">Interface: {{ product.options[1].optionValue }}</li>
+                <li class="list-group-item">Size: {{ product.options[2].optionValue }} GB</li>
+                <li class="list-group-item">Reading Speed: {{ product.options[3].optionValue }} RPM</li>
+                <li class="list-group-item">Buffer: {{ product.options[4].optionValue }} MB</li>
             {% endblock %}
             {% block psuinfo %}
-            <li class="list-group-item">Putere: {{ product.power }} W</li>
-            <li class="list-group-item">Ventilatoare: </li>
-                {% for vent in product.vents %}
-                    <li class="list-group-item">{{ product.vent.name }} </li>
-                {% endfor %}
-            <li class="list-group-item">PFC: {{ product.pfc }}</li>
-            <li class="list-group-item">Eficienta: {{ product.efficiency }} %</li>
-            <li class="list-group-item">Certificare: {{ product.certification }}</li>
+            <li class="list-group-item">Power: {{ product.options[0].optionValue }} W</li>
+            <li class="list-group-item">PFC:{% if product.options[1].optionValue == 1  %} Yes {% else %} No {% endif%}</li>
+{#                {% for vent in product.vents %}#}
+{#                    <li class="list-group-item">{{ product.vent.name }} </li>#}
+{#                {% endfor %}#}
+            <li class="list-group-item">Efficiency: {{ product.options[2].optionValue }} %</li>
+            <li class="list-group-item">Certification: {{ product.options[3].optionValue }}</li>
+            <li class="list-group-item">No. of vents: {{ product.options[4].optionValue }}</li>
             {% endblock %}
             {% block pccaseinfo %}
-            <li class="list-group-item">Tip: {{ product.casetype }}</li>
-            <li class="list-group-item">Dimensiuni (H x D x W): {{ product.height }} x {{ product.diameter }} x {{ product.width }} mm</li>
-            <li class="list-group-item">Sloturi expansiune: x{{ product.slots }}</li>
+            <li class="list-group-item">Type: {{ product.options[0].optionValue }}</li>
+            <li class="list-group-item">Dimensions (H x D x W): {{ product.options[1].optionValue }} x {{ product.options[2].optionValue }} x {{ product.options[3].optionValue }} mm</li>
+            <li class="list-group-item">No. of slots: x{{ product.options[4].optionValue }}</li>
             {% endblock %}
             {% block coolerinfo %}
-            <li class="list-group-item">Tip: {{ product.ctype }}</li>
-            <li class="list-group-item">Racire: {{ product.cooling }}</li>
-            <li class="list-group-item">Inaltime: {{ product.height }} mm</li>
-            <li class="list-group-item">Numar Ventilatoare: {{ product.vents }}</li>
-            <li class="list-group-item">Dimensiune ventilator: {{ product.size }} mm</li>
+            <li class="list-group-item">Type: {{ product.options[0].optionValue }}</li>
+            <li class="list-group-item">Cooling: {% if product.options[1].optionValue == 1  %} Active {% else %} Passive {% endif%}</li>
+            <li class="list-group-item">No. of Vents: {{ product.options[3].optionValue }}</li>
+            <li class="list-group-item">Dimensions (H x W): {{ product.options[2].optionValue }} x {{ product.options[4].optionValue }} mm</li>
             {% endblock %}
 {#        </ul></p>#}
 {#    </div>#}

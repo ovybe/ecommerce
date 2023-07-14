@@ -1,5 +1,10 @@
-<li>Seria: {% if hdd.ssdseries is empty %} N/A {% else %} {{ hdd.ssdseries }} {% endif %}</li>
-<li>Interfata: {% if hdd.ssdinterface is empty %} N/A {% else %} {{ hdd.ssdinterface }} {% endif %}</li>
-<li>Capacitate: {% if hdd.ssdcapacity is empty %} N/A {% else %}  {{ hdd.ssdcapacity }} TB {% endif %}</li>
-<li>Buffer: {% if hdd.buffer is empty %} N/A {% else %} {{ hdd.buffer }} MB {% endif %}</li>
-<li>Viteza: {% if hdd.maxreading is empty %} N/A {% else %} {{ hdd.maxreading }} RPM {% endif %}</li>
+{#<li>Seria: {% if ssd.ssdseries is empty %} N/A {% else %}  {{ ssd.ssdseries }} {% endif %}</li>#}
+{#<li>Interfata: {% if ssd.ssdinterface is empty %} N/A {% else %}  {{ ssd.ssdinterface }} {% endif %}</li>#}
+{#<li>Capacitate: {% if ssd.ssdcapacity is empty %} N/A {% else %} {{ ssd.ssdcapacity}} GB {% endif %}</li>#}
+{#{% if ssd.drivetype == "HDD" %}#}
+{#<li>Buffer: {% if ssd.buffer is empty %} N/A {% else %} {{ ssd.buffer }} MB {% endif %}</li>#}
+{#<li>Viteza: {% if ssd.maxreading is empty %} N/A {% else %} {{ ssd.maxreading }} RPM {% endif %}</li>#}
+{#{% else %}#}
+{#<li>Citire max.: {% if ssd.maxreading is empty %} N/A {% else %} {{ ssd.maxreading }} MB/s {% endif %}</li>#}
+{#{% endif %}#}
+<p class="text-dark-emphasis" style="font-size:0.8rem">{{ card[2].optionValue }} GB {{ card[3].optionValue }} RPM {{ card[4].optionValue }} MB buffer</p>

@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Motherboard;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,34 +18,38 @@ class MotherboardType extends ProductType
 //        parent::buildForm($builder, $options);
         $builder
             ->add('format')
-            ->add('cpusocket',null,[
-//                'constraints' => [
-//                    new NotBlank()
-//                ]
+            ->add('socket',null,[
+                'constraints' => [
+                    new NotBlank()
+                ]
             ])
-            ->add('chipset')
-            ->add('modelchipset')
+            ->add('chipset_producer')
+            ->add('chipset_model')
             ->add('interface')
-            ->add('memory')
+            ->add('memory_type')
             ->add('tech')
-         //   ->add('locations')
+            ->add('consumption',NumberType::class)
+            ->add('submit', SubmitType::class, ['label' => 'Add Product', 'attr'=> ['class'=>'btn btn-outline-dark']])
+
+            //   ->add('locations')
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Motherboard::class,
-            'validation_groups' => function(FormInterface $form) {
-                // If the form is disabled, don't use any constraints
-                $form_data=$form->getParent()->getData();
-                if ($form_data['type']==ucfirst($this->getBlockPrefix())) {
-                    return 'need_validation';
-                }
-
-                // Otherwise, use the default validation group
-                return 'Default';
-            }
+            'allow_extra_fields' => true,
+//            'validation_groups' => function(FormInterface $form) {
+//                // If the form is disabled, don't use any constraints
+//                $form_data=$form->getParent()->getData();
+//                #dd($form_data);
+//                if ($form_data['type']==4) {
+//                    return 'need_validation';
+//                }
+//
+//                // Otherwise, use the default validation group
+//                return 'Default';
+//            }
         ]);
     }
 }

@@ -1,0 +1,32 @@
+{% for category in categories %}
+    <tr id="{{ category.categoryName }}" data-cat-id="{{ category.id }}" class="d-table-row">
+        {% if selectedProducts[category.categoryName] is defined %}
+            {% if category.id in compatibility_problems|keys %}
+                {% include 'element_templates/pcbuilder_selected_products.html.twig' with {item:selectedProducts[category.categoryName],problem:compatibility_problems[category.id]} %}
+            {% else %}
+                {% include 'element_templates/pcbuilder_selected_products.html.twig' with {item:selectedProducts[category.categoryName]} %}
+            {% endif %}
+        {% else %}
+            {% include 'element_templates/pcbuilder_empty_products.html.twig' with {category_type:category.categoryName}%}
+        {% endif %}
+    </tr>
+{% endfor%}
+<tr class="border-bottom-0">
+    <td class="border-bottom-0" ></td>
+    <td class="border-bottom-0" id="consumptionTotal" >
+        {#                                <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#selectModal"><i class="bi bi-plus-lg"></i>Adauga Componenta</button>#}
+        Consumption: {{ consumption_total }} W
+    </td>
+    <td class="border-bottom-0" id="psuAdvice" >
+        {{ psu_advice }}
+    </td>
+    <td class="border-bottom-0" >
+        Pret total:
+    </td>
+    <td class="border-bottom-0 ms-0" id="priceTotal" >
+        {{ price_total }} RON
+    </td>
+    <td class="border-bottom-0" >
+        <a class="btn btn-success w-100" id="add-all-to-cart">Add all to cart</a>
+    </td>
+</tr>

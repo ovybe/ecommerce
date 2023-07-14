@@ -1,4 +1,4 @@
 {#<li>Tip: {% if case.casetype is empty %} N/A {% else %} {{ case.casetype }} {% endif %}</li>#}
 {#<li>Dimensiuni (H x D x W): {% if case.height is empty %} N/A {% else %} {{ case.height }} {% endif %} x {% if case.diameter is empty %} N/A {% else %} {{ case.diameter }} {% endif %} x {% if case.width is empty %} N/A {% else %} {{ case.width }} {% endif %} mm</li>#}
 {#<li>Sloturi expansiune: {% if case.slots is empty %} N/A {% else %} x{{ case.slots }} {% endif %}</li>#}
-<p class="text-dark-emphasis" style="font-size:0.8rem">{{ card.casetype }} {{ card.height }} x {{ card.diameter }} x {{ card.height }} mm</p>
+<p class="text-dark-emphasis" style="font-size:0.8rem">{{ card[0].optionValue }} {{ card[1].optionValue }} x {{ card[2].optionValue }} x {{ card[3].optionValue }} mm</p>

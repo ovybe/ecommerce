@@ -12,7 +12,7 @@
 
 {% block body %}
     <div class="container bg-white rounded border mt-3">
-        <a href="/">Home</a>/<a href="/">Product</a>/<span href="/product/{{ product.id }}">{{ product.name }}</span>
+        <a class="text-body" href="/">Home</a>/<a class="text-body" href="/">Product</a>/<span href="/product/{{ product.id }}">{{ product.name }}</span>
         <h3 class="mb-0">{{ product.name }}</h3>
         <span>SKU:{% if product.SKU is empty %} N/A {% else %}{{ product.SKU }} {% endif %}</span>
         <div class="row">
@@ -74,7 +74,7 @@
                 <h4>Specifications</h4>
                 {% use "index/product_template.html.twig" %}
                 <ul class="list-group">
-                    {{ block(product.type|lower~'info') }}
+                    {{ block(product.category.categoryName|lower~'info') }}
                 </ul>
             </div>
             <div  class="col-12">

@@ -1,0 +1,13 @@
+{% if category_type is defined %}
+    <td class="d-table-cell">{{category_type|capitalize}}</td>
+{% endif %}
+<td class="d-table-cell">
+{#        <img alt="{{ item.product.name }}" style="width:128px;height:72px;"src="{% if item.product.thumbnail is empty%}https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png{% else %}/thumbnails/{{ item.product.thumbnail }}{% endif %}"/>#}
+    </td>
+    <td class="d-table-cell">
+        <a class="text-primary info-btn" data-bs-toggle="modal" data-bs-target="#infoModal"><i class="bi bi-info-circle"></i></a>
+        Click the respective category icon outside of offcanvas to get a list of available products for this spot.
+    </td>
+    <td class="d-table-cell"></td>
+    <td class="d-table-cell"></td>
+    <td class="d-table-cell prod-select-actions" data-pid="none"></td>

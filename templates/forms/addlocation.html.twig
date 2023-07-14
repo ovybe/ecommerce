@@ -14,8 +14,8 @@
 
         {{ form_start(form) }}
     <div class="d-flex">
-        <div class="col-1"></div>
-    <h4 class="text-white col-11 ps-5">Add Location</h4>
+        <div class="col-1 col-md-4"></div>
+    <h4 class="col-11 col-md-8 ps-5">Add Location</h4>
     </div>
     <div class="container d-flex">
 
@@ -24,32 +24,85 @@
                 {{ form_errors(form) }}
             </div>
 
-            <div class="col-6 container-fluid bg-white border p-5 pt-4 rounded mx-auto">
-                    <div class="row input-group mb-3 ms-1">
+            <div class="col-12 col-md-6 container-fluid bg-white border p-5 pt-4 rounded mx-auto">
+                <div class="input-group mb-3">
+                    <div class="form-floating row">
+                        {{ form_widget(form.name,{'attr':{
+                            'class':'form-control',
+                            'placeholder':'ex. Magazin Arad'
+                        }})
+                        }}
                         {{ form_label(form.name) }}
-                        {{ form_widget(form.name) }}
                     </div>
-                    <div class="row input-group mb-3 ms-1">
+                    <div class="invalid-feedback row">
+                        {{ form_errors(form.name) }}
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="form-floating row">
+                        {{ form_widget(form.address,{'attr':{
+                            'class':'form-control',
+                            'placeholder':'ex. Joe Doe Str.'
+                        }})
+                        }}
                         {{ form_label(form.address) }}
-                        {{ form_widget(form.address) }}
                     </div>
-                    <div class="row input-group mb-3 ms-1">
+                    <div class="invalid-feedback row">
+                        {{ form_errors(form.address) }}
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="form-floating row">
+                        {{ form_widget(form.country,{'attr':{
+                            'class':'form-control',
+                        }})
+                        }}
                         {{ form_label(form.country) }}
-                        {{ form_widget(form.country) }}
                     </div>
-                    <div class="row input-group mb-3 ms-1">
+                    <div class="invalid-feedback row">
+                        {{ form_errors(form.country) }}
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="form-floating row">
+                        {{ form_widget(form.city,{'attr':{
+                            'class':'form-control',
+                            'placeholder':'ex. Arad'
+                        }})
+                        }}
                         {{ form_label(form.city) }}
-                        {{ form_widget(form.city) }}
                     </div>
-                <div class="row input-group mb-3 ms-1">
-                    {{ form_label(form.coordX) }}
-                    {{ form_widget(form.coordX) }}
+                    <div class="invalid-feedback row">
+                        {{ form_errors(form.city) }}
+                    </div>
                 </div>
-                <div class="row input-group mb-3 ms-1">
-                    {{ form_label(form.coordY) }}
-                    {{ form_widget(form.coordY) }}
+                <div class="input-group mb-3">
+                    <div class="form-floating row">
+                        {{ form_widget(form.coordX,{'attr':{
+                            'class':'form-control',
+                            'placeholder':'ex. 12.33333'
+                        }})
+                        }}
+                        {{ form_label(form.coordX) }}
+                    </div>
+                    <div class="invalid-feedback row">
+                        {{ form_errors(form.coordX) }}
+                    </div>
                 </div>
-                <div class="row col-3 mx-auto">
+                <div class="input-group mb-3">
+                    <div class="form-floating row">
+                        {{ form_widget(form.coordY,{'attr':{
+                            'class':'form-control',
+                            'placeholder':'ex. 12.33333'
+                        }})
+                        }}
+                        {{ form_label(form.coordY) }}
+                    </div>
+                    <div class="invalid-feedback row">
+                        {{ form_errors(form.coordY) }}
+                    </div>
+                </div>
+                <div class="row col-12 col-md-3 mx-auto">
                     {{ form_widget(form.submit) }}
             </div>
         </div>

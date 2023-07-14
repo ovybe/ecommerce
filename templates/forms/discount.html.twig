@@ -29,7 +29,7 @@
 
         <div class="col-6 ms-5 container-fluid bg-light p-5 pt-4 me-0 rounded">
             <div class="input-group mb-3">
-                <div class="form-floating">
+                <div class="form-floating row">
                     {{ form_widget(form.code,{'attr':{
                         'class':'form-control',
                         'placeholder':'ex. RO2023'
@@ -37,11 +37,11 @@
                     }}
                     {{ form_label(form.code) }}
                 </div>
-                <div class="invalid-feedback">
+                <div class="invalid-feedback row">
                     {{ form_errors(form.code) }}
                 </div>
             </div>
-            <div class="input-group mb-3">
+            <div class="input-group mb-0">
                 <div class="form-check form-switch col-12">
                     {{ form_widget(form.percentage,{'attr':{
                         'class':'form-check-input',
@@ -51,10 +51,12 @@
                     <label class="form-check-label" for="discount_percentage">Toggle reading price as percentage instead</label>
 
                 </div>
-                <div>
+                <div class="col-12">
                     {{ form_errors(form.percentage) }}
                 </div>
-                <div class="form-floating">
+            </div>
+            <div class="input-group mb-3">
+                <div class="form-floating row">
                     {{ form_widget(form.price,{'attr':{
                         'class':'form-control',
                         'placeholder':'ex. 100'
@@ -67,7 +69,7 @@
                 </div>
             </div>
             <div class="input-group mb-3">
-                <div class="form-floating">
+                <div class="form-floating row">
                     {{ form_widget(form.uses,{'attr':{
                         'class':'form-control',
                         'placeholder':'ex: 100 or empty for infinite'
@@ -79,9 +81,12 @@
                     {{ form_errors(form.uses) }}
                 </div>
             </div>
-            <div class="input-group mb-3">
-                <div class="col-12 ms-1">{{ form_label(form.expiration) }}</div>
-                <div class="">
+            <div class="input-group mb-3 justify-content-center">
+                <div class="col-12 text-center">{{ form_label(form.expiration) }}</div>
+                {% if exptime is defined %}
+                    <div class="col-12 ms-0">Current set expiration:{{ exptime|date("d/m/Y H:i",timezone) }}</div>
+                {% endif %}
+                <div>
                         {{ form_widget(form.expiration) }}
                 </div>
 {#                <div class="form-floating">#}
@@ -128,7 +133,7 @@
                     {{ form_errors(form.expiration) }}
                 </div>
             </div>
-            <div class="row col-3 mx-auto">
+            <div class="row col-12 col-lg-3 mx-auto">
                 <button class="btn btn-outline-dark" type="submit">Submit</button>
             </div>
         </div>

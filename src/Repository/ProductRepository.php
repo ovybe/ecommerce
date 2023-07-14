@@ -4,10 +4,12 @@ namespace App\Repository;
 
 use App\Entity\Cpu;
 use App\Entity\Gpu;
+use App\Entity\Option;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Flex\Options;
 
 /**
  * @extends BaseProductRepository<Product>
@@ -26,24 +28,30 @@ class ProductRepository extends BaseProductRepository
         parent::__construct($registry, Product::class);
     }
 
-    public function findByFilters($filter_arr){
+    public function findByFiltersAndFunctionValue($filter_arr,$function_type,$function_value){
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('p')
             ->from(Product::class, 'p')
-            ->leftJoin(Gpu::class, 'g',Join::WITH, 'p.id=g.id')
-            ->leftJoin(Cpu::class,'c',Join::WITH,'p.id=c.id');
-
-        $k=0;
-        foreach ($filter_arr as $key => $filters) {
-            foreach($filters as $f_index => $filter){
-                $qb->orWhere(":filter_key".$k." like :filter".$f_index)
-                ->setParameter('filter_key'.$k,$key)
-                ->setParameter('filter' . $f_index, '%' . $filter . '%');
-                $k++;
-            }
+            ->leftJoin(Option::class, 'o',Join::WITH, 'p.id=o.product');
+        if($function_type==0 && $function_value>0){
+            $qb->andWhere('p.category=:category_id');
+            $qb->setParameter('category_id',$function_value);
         }
-        #->where($filter_arr);
-        dd($qb->getQuery());
+        else if($function_type==1) {
+            $any_value="%".$function_value."%";
+            $qb->andWhere('p.SKU like :sku or p.shortDesc like :short_desc or p.description like :description or p.name like :name');
+            $qb->setParameter('sku',$any_value);
+            $qb->setParameter('short_desc',$any_value);
+            $qb->setParameter('description',$any_value);
+            $qb->setParameter('name',$any_value);
+        }
+
+
+        foreach ($filter_arr as $key => $filters) {
+            $qb->andWhere('o.option_name like :filter_key and o.option_value in (:filter_values)');
+            $qb->setParameter('filter_key',$key);
+            $qb->setParameter('filter_values',$filters);
+        }
 
         return $qb->getQuery()->getResult();
     }

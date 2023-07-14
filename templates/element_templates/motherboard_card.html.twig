@@ -5,4 +5,5 @@
 {#<li>Interfata grafica: {% if mb.mbinterface is empty %} N/A {% else %} {{ mb.mbinterface }} {% endif %}</li>#}
 {#<li>Tip Memorie: {% if mb.mbmemory is empty %} N/A {% else %} {{ mb.mbmemory }} {% endif %}</li>#}
 {#<li>Tehnologie: {% if mb.tech is empty %} N/A {% else %} {{ mb.tech }} {% endif %}</li>#}
-<p class="text-dark-emphasis" style="font-size:0.8rem">{{ card.format }} Format {{ card.modelchipset}} Chipset {{ card.memory }}</p>
+{# Based on order from Type classes#}
+<p class="text-dark-emphasis" style="font-size:0.8rem">{{ card[0].optionValue }} Format {{ card[3].optionValue}} Chipset {{ card[5].optionValue}}</p>

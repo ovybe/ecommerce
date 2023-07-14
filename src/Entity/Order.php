@@ -254,6 +254,7 @@ class Order
 
         return $this;
     }
+
     public function removeInventory(EntityManagerInterface $entityManager): self{
         foreach($this->getItems() as $item){
             $pi=$item->getProduct()->getHighestInventory();
@@ -297,7 +298,8 @@ class Order
             $this->setPostalCode($session['address']['postal_code']);
             $this->setState($session['address']['state']);
             $this->setCustomerName($session['name']);
-            $this->setPhone($session['customer_details']['phone']);
+//            dd($session['customer_details']);
+//            $this->setPhone($session['customer_details']['phone']);
         }
         foreach($this->getInventoryLogs() as $item){
             $this->removeInventoryLog($item);

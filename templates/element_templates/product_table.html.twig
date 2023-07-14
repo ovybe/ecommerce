@@ -1,0 +1,37 @@
+<h4 class="text-dark col-6">Product List</h4>
+{% if products is not empty %}
+<div class="table-responsive">
+<table class="table table-striped" id="product-table">
+    <thead>
+    <tr>
+        <th scope="col">Thumbnail</th>
+        <th scope="col">Name</th>
+{#        <th scope="col">Category</th>#}
+        {% set product = products|first %}
+        {% for option in product.options %}
+        <th scope="col">{{ option.optionName|capitalize|replace({'_':' '}) }}</th>
+        {% endfor %}
+{#        <th scope="col">Consumption</th>#}
+        <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for product in products %}
+        <tr class="d-table-row prod-row">
+            <td class="d-table-cell">
+                <img alt="{{ product.name }}" style="width:128px;height:72px;"src="{% if product.thumbnail is empty%}https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png{% else %}/thumbnails/{{ product.thumbnail }}{% endif %}"/>
+            </td>
+            <td class="d-table-cell">{{ product.name }}</td>
+{#            <td class="d-table-cell">{{ product.category.categoryName }}</td>#}
+        {% for option in product.options %}
+            {% if option.optionValue is not null %} <td class="d-table-cell text-truncate">{{ option.optionValue }}</td> {% else %} <td class="d-table-cell text-truncate">N/A</td> {% endif %}
+        {% endfor %}
+            <td class="d-table-cell"><button data-pid="{{ product.id }}" data-cat="{{ product.category.categoryName }}" class="btn btn-primary prod-select{% if product.id == selected_product %} disabled">Selected{% else %} ">Select{% endif %}</button></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<h1 class="text-center">No products available for this category right now.</h1>
+{% endif %}

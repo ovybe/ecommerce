@@ -2,9 +2,11 @@ var prevValue;
 
 $(document).ready(function() {
     // you may need to change this code if you are not using Bootstrap Datepicker
-    var typeSelect=$("select#edit_product_product_type");
-    if($("option:selected",typeSelect).value!==null)
+    var typeSelect=$("select#edit_product_type");
+    var selectedValue=$("option:selected",typeSelect).value;
+    if(!selectedValue==null && $("#formdiv").find("#"+selectedValue)!==undefined)
     {
+        // TODO: form shouldn't have extra fields
         $(typeSelect).trigger("change");
     }
     $('.js-datepicker').datepicker({
@@ -12,11 +14,27 @@ $(document).ready(function() {
     });
 });
 
-$("select#edit_product_product_type").on('change', function () {
+$("select#edit_product_type").on('change', function () {
+    //console.log("changed??");
     var optionSelected = $("option:selected", this);
+    var formType= $("#container").data('type')
+    //console.log(optionSelected);
     var valueSelected = this.value;
-    $("#"+prevValue).css("display","none");
-    $("#"+valueSelected).show();
+    // $("#"+prevValue).css("display","none");
+    // $("#"+valueSelected).show();
+    $.ajax({
+        url: '/admin/render_subform',
+        type: 'POST',
+        data: {
+            type:valueSelected,
+            add_or_edit:formType,
+        },
+        success: function(data) {
+            console.log(data);
+            $("#formdiv").html(data);
+
+        }
+    });
     prevValue=this.value;
 });
 $("span#addloc").on('click', function () {

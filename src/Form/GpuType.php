@@ -3,10 +3,14 @@
 namespace App\Form;
 
 use App\Entity\Gpu;
+use Doctrine\DBAL\Types\FloatType;
+use Doctrine\DBAL\Types\IntegerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
@@ -19,24 +23,17 @@ class GpuType extends ProductType
         //parent::buildForm($builder, $options);
         $builder
             ->add('interface',null, [
-                'attr' => ['class'=>'rounded col-12 rq'],
+//                'attr' => ['class'=>'rounded col-12 rq'],
 //                'constraints' => [
 //                    new NotBlank()
 //                ]
             ])
-            ->add('clock')
-            ->add('memory')
-            ->add('size')
-            ->add('releasedate',DateType::class,[
-                'widget' => 'single_text',
-
-                // prevents rendering it as type="date", to avoid HTML5 date pickers
-                'html5' => false,
-
-                // adds a class that can be selected in JavaScript
-                'attr' => ['class' => 'js-datepicker'],
-            ])
+            ->add('clock',NumberType::class)
+            ->add('memory_type')
+            ->add('memory_size',NumberType::class)
+            ->add('consumption',NumberType::class)
             ->add('series')
+            ->add('submit', SubmitType::class, ['label' => 'Add Product', 'attr'=> ['class'=>'btn btn-outline-dark']])
             //->add('locations')
         ;
     }
@@ -46,9 +43,9 @@ class GpuType extends ProductType
         $resolver->setDefaults([
 
 //            'inherit_data' => true,
-            'data_class' => Gpu::class,
             'attr' => ['class'=>'rounded col-12'],
             'label_attr' => ['class'=>'col-12 ms-5'],
+            'allow_extra_fields' => true,
         ]);
     }
 }

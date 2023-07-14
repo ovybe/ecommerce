@@ -1,0 +1,16 @@
+<h4> Generated builds below</h4>
+{% for build_key in builds|keys %}
+<div class="build" data-key="{{ build_key }}">
+    <h4>Build {{ build_key+1 }}</h4>
+    <p>Total cost: {{ total_prices[build_key] }} RON</p>
+{#    <p></p>#}
+    <a class="btn btn-outline-primary build-btn" data-choice="selectedBuild">Select this build</a>
+    <div class="row items">
+        {%  for component in builds[build_key] %}
+            {% if component is not null %}
+                {% include 'element_templates/builder_card.html.twig' with {'card': component} %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}

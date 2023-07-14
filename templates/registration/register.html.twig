@@ -166,6 +166,18 @@
 {#                                            <input type="password" placeholder="Confirm Password" class="form-control" id="password_confirm" required>#}
                                         </div>  
                                     </div>
+                                    <div class="form-group mb-4">
+                                        <label for="password_confirm">Select Country</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon5"><span class="fas fa-globe-europe"></span></span>
+                                            {{ form_widget(registrationForm.country,{
+                                                attr:{
+                                                    class:'form-control'
+                                                }
+                                            }) }}
+                                            {#                                            <input type="password" placeholder="Confirm Password" class="form-control" id="password_confirm" required>#}
+                                        </div>
+                                    </div>
                                     <!-- End of Form -->
                                     <div class="form-check mb-4">
                                         <input class="form-check-input" type="checkbox" value="" id="terms">

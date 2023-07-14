@@ -2,4 +2,4 @@
 {#<li>Seria: {% if cpu.series is empty %} N/A {% else %}{{ cpu.series }} {% endif %}</li>#}
 {#<li>Nucleu: {% if cpu.core is empty %} N/A {% else %} {{ cpu.core }} {% endif %}</li>#}
 {#<li>Frecventa: {% if cpu.cpufrequency is empty %} N/A {% else %} {{ cpu.cpufrequency }} GHz {% endif %}</li>#}
-<p class="text-dark-emphasis" style="font-size:0.8rem">{{ card.frequency }} GHz {{ card.socket }} Socket</p>
+<p class="text-dark-emphasis" style="font-size:0.8rem">{{ card[3].optionValue }} GHz {{ card[0].optionValue }} Socket</p>

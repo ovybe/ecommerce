@@ -1,0 +1,20 @@
+{#{% if app.user.country is not null %}#}
+{#    {% set timezone = app.user.country.timezones.0.zoneName%}#}
+{#        {% else %}#}
+{#    {% set timezone = "Europe/Bucharest" %}#}
+{#{% endif %}#}
+<tr>
+    <td class="d-table-cell">{{ template.uid }}</td>
+    <td class="d-table-cell pname text-truncate" style="max-width: 100px;">{{ template.templateName }}</td>
+    <td class="d-table-cell">
+        {% for item in template.cartItems %}
+            <a href="{{ path('app_product',{id:item.product.uid}) }}" class="ms-1 text-decoration-none">{{ item.product.name }}</a>
+        {% endfor %}
+    </td>
+    <td>
+        <a class="btn btn-outline-primary" href="{{ path('app_pcbuilder_template',{uid:template.uid}) }}"><i class="bi bi-info-square"></i></a>
+        <a class="btn btn-outline-dark" href="{{ path('app_pcbuilder',{uid:template.uid}) }}"><i class="bi bi-pencil-square"></i></a>
+        <button type="button" class="btn btn-outline-danger conbtnp" data-bs-toggle="modal"
+                data-id="{{ template.uid }}"
+                data-bs-target="#confirmModalTemplate"><i class="bi bi-trash"></i></button></td>
+</tr>

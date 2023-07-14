@@ -1,0 +1,18 @@
+<li class="mb-2 p-1">
+    <h5 id="filterh" data-f="{{ function }}" data-v="{{ value }}" class="text-body-emphasis text-decoration-none">Filtre</h5>
+</li>
+{% for col_name,col_array in filters %}
+<li>
+    <h6 class="bg-transparent text-body-emphasis text-decoration-none ms-1">{{ col_name|capitalize }}</h6>
+</li>
+{#    {{ dump(selected_filters) }}#}
+<ul style="list-style: none;">
+    {% for filter in col_array %}
+    <li>
+
+        <input data-col="{{ col_name }}" value="{{ col_name }}-{{ filter[0] }}" class="filter" type="checkbox">
+        <span class="filter_val" class="bg-transparent text-body-emphasis text-decoration-none">{{ filter[0] }}</span><span class="filter_count" class="bg-transparent text-body-emphasis text-decoration-none"> ({{ filter[1] }})</span>
+    </li>
+    {% endfor %}
+</ul>
+{% endfor %}

@@ -1,0 +1,12 @@
+
+<div id="{{ subform_id }}" class="ms-3">
+        {% for field in subform %}
+        <div class="row input-group mb-3">
+            {% if field.vars.name!="submit" %}
+            {{ form_errors(field) }}
+            {% endif %}
+            {{ form_label(field) }}
+            {{ form_widget(field) }}
+        </div>
+        {% endfor %}
+</div>

@@ -30,12 +30,12 @@
                 {% block navbar %}
                     <nav class="navbar navbar-expand-lg fixed-top " style="background-color:#1c2540;">
                         <div class="container-fluid">
-                            <a class="navbar-brand text-white" href="/">PC Store</a>
-                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <a class="navbar-brand text-white" href="/">Hardware Trove</a>
+                            <button class="navbar-toggler text-bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                                 <span class="navbar-toggler-icon"></span>
                             </button>
                             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <ul class="navbar-nav mb-2 mb-lg-0">
                                     <li class="nav-item">
                                         <a class="nav-link {% block navhome %}{% endblock %} text-white" aria-current="page" href="/"><i class="bi bi-house"></i> Home</a>
                                     </li>
@@ -47,10 +47,17 @@
                                             <i class="bi bi-list"></i> Catalog
                                         </a>
                                         <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Componente</a></li>
-                                            <li><a class="dropdown-item" href="#">Accesorii</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('app_search') }}">All components</a></li>
                                             <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item" href="#">Sisteme</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('app_catalog',{value:'gpu'}) }}">GPUs</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('app_catalog',{value:'cpu'}) }}">CPUs</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('app_catalog',{value:'memory'}) }}">Memory sticks</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('app_catalog',{value:'motherboard'}) }}">Motherboards</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('app_catalog',{value:'ssd'}) }}">SSDs</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('app_catalog',{value:'hdd'}) }}">HDDs</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('app_catalog',{value:'psu'}) }}">PSUs</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('app_catalog',{value:'pccase'}) }}">PC Cases</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('app_catalog',{value:'cooler'}) }}">Coolers</a></li>
                                         </ul>
                                     </li>
                                     {% if is_granted("ROLE_ADMIN") %}
@@ -62,17 +69,27 @@
                                                 <li><a class="dropdown-item" href="{{ path('app_admin') }}"><i class="bi bi-card-list"></i> Menu</a></li>
                                                 <li><hr class="dropdown-divider"></li>
                                                 <li><a class="dropdown-item" href="{{ path('app_add_product') }}"><i class="bi bi-plus-lg"></i> Add Product</a></li>
+                                                <li><a class="dropdown-item" href="{{ path('app_admin_add_discount') }}"><i class="bi bi-plus-lg"></i> Add Discount</a></li>
                                                 <li><hr class="dropdown-divider"></li>
                                                 <li><a class="dropdown-item" href="{{ path('app_add_location') }}"><i class="bi bi-plus-lg"></i> Add Location</a></li>
                                             </ul>
                                         </li>
                                     {% endif %}
                                 </ul>
-                                <form id="search-form" action="{{ path('app_search') }}" class="d-flex w-50 ms-0" role="search">
+                                <form id="search-form" action="{{ path('app_search') }}" class="d-flex col-12 col-lg-4 ms-lg-5" role="search">
                                     <input id="search-inpt" class="form-control me-2" type="search" placeholder="Denumire sau cod produs..." aria-label="Search">
                                     <button id="search-btn" class="btn btn-outline-light" type="submit">Search</button>
                                 </form>
                                 <ul class="navbar-nav ms-auto">
+                                    {% if is_granted("ROLE_USER") %}
+                                    <li class="nav-item">
+                                        <a class="nav-link text-light">Hello, {{ app.user.firstName }} {{ app.user.lastName }}!</a>
+                                    </li>
+                                    {% else %}
+                                    <li class="nav-item">
+                                        <a class="nav-link text-light">You are not logged in.</a>
+                                    </li>
+                                    {% endif %}
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle text-white" href="{% if is_granted("ROLE_USER") %}{{ path('app_user_settings') }}{% else %}{{ path('app_register') }}{% endif %}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="bi bi-person-circle"></i> User
@@ -112,7 +129,7 @@
                         </div>
                         <div class="col-lg-6">
                             <h1 class="display-5 fw-bold text-white-emphasis lh-1 mb-3">Check out our handy PC Builder.</h1>
-                            <p class="lead">Not sure what you need? We have a PC Builder to assist you in making a satisfactory purchase. Check it out <a href="#">here</a> or click the "PC Builder" button above.</p>
+                            <p class="lead">Not sure what you need? We have a PC Builder to assist you in making a satisfactory purchase. Check it out <a href="{{ path('app_pcbuilder_choice') }}">here</a> or click the "PC Builder" button above.</p>
 {#                            <div class="d-grid gap-2 d-md-flex justify-content-md-start">#}
 {#                                <button type="button" class="btn btn-primary btn-lg px-4 me-md-2">Primary</button>#}
 {#                                <button type="button" class="btn btn-outline-secondary btn-lg px-4">Default</button>#}

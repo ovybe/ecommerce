@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\CartItem;
 use App\Entity\Discount;
 use App\Entity\Order;
+use App\Entity\PCBuilderTemplate;
 use App\Entity\Product;
 use App\Form\DiscountCodeType;
 use App\Form\OrderPaymentType;
@@ -46,7 +47,7 @@ class CartController extends AbstractController
 
             if ($discountForm->isSubmitted() && $discountForm->isValid()) {
                 $discountCode=$discountForm->getData();
-                // TODO: validation, add a remove discount coupon choice, add error for not finding coupon
+
                 $discount=$entityManager->getRepository(Discount::class)->findOneBy(['code'=>$discountCode]);
                 $now=new \DateTimeImmutable();
                 if($discount!=null && $discount->getExpiration()<$now){
@@ -63,13 +64,10 @@ class CartController extends AbstractController
                     ]);
 
                 }
-//                dd($discountCode);
                 // FOR NOW, IF DISCOUNT IS NULL IT JUST SETS THE DISCOUNT USED AS NULL ALSO
                 $cart->setDiscount($discount);
                 $cartManager->save($cart);
-//                if($discount!=null){
-//
-//                }
+
             }
         }
 
@@ -118,12 +116,12 @@ class CartController extends AbstractController
     #[Route('/add_quantity/{cartItem}', name: 'app_add_quantity')]
     public function add_quantity(CartManager $cartManager,int $cartItem): JsonResponse
     {
-        // ADD PAYMENT DETAILS, DISCOUNTS, MAKE FORM
+
         $cart = $cartManager->getCurrentCart();
         $item = $cart->getItems()->get($cartItem);
         $itemProduct = $item->getProduct();
         $newQuantity=$item->getQuantity()+1;
-        //dd($itemProduct,$itemProduct->getTotalInventory());
+
         if($newQuantity<=$itemProduct->getTotalInventory())
             $item->setQuantity($newQuantity);
         $cartManager->save($cart);
@@ -133,11 +131,10 @@ class CartController extends AbstractController
     #[Route('/sub_quantity/{cartItem}', name: 'app_sub_quantity')]
     public function sub_quantity(CartManager $cartManager,int $cartItem): JsonResponse
     {
-        // TODO: ADD PAYMENT DETAILS, DISCOUNTS, MAKE FORM
         $cart = $cartManager->getCurrentCart();
         $item = $cart->getItems()->get($cartItem);
         $newQuantity=$item->getQuantity()-1;
-        //dd($itemProduct,$itemProduct->getTotalInventory());
+
         if($newQuantity>0)
             $item->setQuantity($newQuantity);
         $cartManager->save($cart);
@@ -187,16 +184,91 @@ class CartController extends AbstractController
         $item->setQuantity(1);
         $item->setAssocOrder($cart);
 
-        //$entityManager->persist($item);
-        //$entityManager->flush();
         $cart->addItem($item);
 
         $cartManager->save($cart);
 
-        //dd($cart);
         $html = $this->renderView('element_templates/cart.html.twig',['cart'=>$cart]);
 
-        //dd($html);
+
+        return $this->json($html);
+    }
+    #[Route('/remove_from_cart/{id}', name: 'app_remove_from_cart')]
+    public function remove_from_cart(CartManager $cartManager,EntityManagerInterface $entityManager,int $id): Response
+    {
+        // STOPPED AT CART, WORK ON SESSION EXPIRATION
+        $cart=$cartManager->getCurrentCart();
+        $items=$cart->getItems();
+        foreach($items as $ci){
+            if($ci->getId()==$id){
+                $item=$ci;
+                $cart->removeItem($item);
+                $entityManager->remove($item);
+                $entityManager->flush();
+                break;
+            }
+        }
+
+
+        $html_cart = $this->renderView('element_templates/cart.html.twig',['cart'=>$cart]);
+        $html_order = $this->renderView('element_templates/order_items.html.twig',['cart'=>$cart]);
+
+        $json_arr=['cart'=>$html_cart,'order'=>$html_order];
+
+
+        return $this->json($json_arr);
+    }
+
+    #[Route('/remove_all_from_cart/', name: 'app_remove_all_from_cart')]
+    public function remove_all_from_cart(CartManager $cartManager,EntityManagerInterface $entityManager): Response
+    {
+
+        $cart=$cartManager->getCurrentCart();
+        $items=$cart->getItems();
+        foreach($items as $ci){
+            $cart->removeItem($ci);
+            $entityManager->remove($ci);
+        }
+
+        $entityManager->flush();
+
+
+        $html_cart = $this->renderView('element_templates/cart.html.twig',['cart'=>$cart]);
+        $html_order = $this->renderView('element_templates/order_items.html.twig',['cart'=>$cart]);
+
+        $json_arr=['cart'=>$html_cart,'order'=>$html_order];
+
+
+        return $this->json($json_arr);
+    }
+
+    #[Route('/add_all_to_cart/{uid}', name: 'app_add_all_to_cart')]
+    public function add_all_to_cart(CartManager $cartManager,EntityManagerInterface $entityManager,string $uid): Response
+    {
+        // STOPPED AT CART, WORK ON SESSION EXPIRATION
+        $cart=$cartManager->getCurrentCart();
+        $template=$entityManager->getRepository(PCBuilderTemplate::class)->findOneBy(['uid'=>$uid]);
+        foreach($template->getCartItems() as $templateCI){
+            $templateProduct=$templateCI->getProduct();
+            $notFound=true;
+            foreach($cart->getItems() as $cartCI){
+                if($cartCI->getProduct()==$templateProduct){
+                    $cartCI->setQuantity($cartCI->getQuantity()+1);
+                    $notFound=false;
+                }
+            }
+            if($notFound) {
+                $item = new CartItem();
+                $item->setProduct($templateProduct);
+                $item->setQuantity($templateCI->getQuantity());
+                $item->setAssocOrder($cart);
+                $cart->addItem($item);
+            }
+        }
+
+        $cartManager->save($cart);
+
+        $html = $this->renderView('element_templates/cart.html.twig',['cart'=>$cart]);
 
         return $this->json($html);
     }

@@ -1,0 +1,30 @@
+.size-button {
+    position: fixed;
+    top: 50%;
+    right: 15px;
+    transform: translateX(0);
+    -webkit-transition: -webkit-transform .3s ease-in-out;
+    transition: -webkit-transform .3s ease-in-out;
+    transition: transform .3s ease-in-out;
+    transition: transform .3s ease-in-out,-webkit-transform .3s ease-in-out
+}
+
+.size-button.shown {
+    transform: translateX(-69rem);
+}
+
+.size-button button {
+    height: 70px;
+    width: 70px;
+    border-radius: 70px;
+    background-color: #052c65;
+    border-color: #052c65;
+}
+
+.size-button button i {
+    color: #fff;
+    font-size: 30px
+}
+.info-btn:hover{
+    cursor:pointer;
+}

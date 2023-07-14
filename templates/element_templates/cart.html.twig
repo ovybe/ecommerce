@@ -1,17 +1,19 @@
 <li class="d-flex">
     <div class="col-4 ms-2" >
         <a class="text-decoration-none" href="{{ path('app_cart') }}">Checkout</a>
+        <small><a class="text-decoration-none" href="javascript:void(0)" id="cart-clear-btn">Clear</a></small>
         <p class="mb-0">Products</p>
     </div>
     <p class="text-end col-7">Total: {{ cart.total }} RON</p>
 </li>
 {% for ci in cart.items %}
     <li><hr class="dropdown-divider"></li>
-    <li class="ms-1 d-flex">
+    <li class="ms-1 d-flex cart-item">
         <img src="{% if ci.product.thumbnail is empty %} https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png {% else %}/thumbnails/{{ ci.product.thumbnail }}{% endif %}" class="col-2" alt="...">
         <div class="col-7 ms-1 mb-0" style="font-size:0.8rem;">
             <a class="mb-0 text-decoration-none" href="{{ path('app_product', {id:ci.product.uid}) }}">{{ ci.product.name }}</a>
             <p class="mb-0">Amount: {{ ci.quantity }}</p>
+            <a class="mb-0 text-decoration-none cart-rbtn" href="javascript:void(0)" data-id="{{ ci.id }}">Remove</a>
         </div>
         <div class="col-3 ms-1 mb-0" style="font-size:0.8rem;">
             <p class="mb-0">{{ ci.total }} RON</p>

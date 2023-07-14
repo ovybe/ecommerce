@@ -1,0 +1,16 @@
+<td class="d-table-cell">{{item.product.category.categoryName|capitalize}}</td>
+<td class="d-table-cell">
+    <img alt="{{ item.product.name }}" style="width:128px;height:72px;"src="{% if item.product.thumbnail is empty%}https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png{% else %}/thumbnails/{{ item.product.thumbnail }}{% endif %}"/>
+</td>
+<td class="d-table-cell"><span id="cat-name-{{ item.product.category.id }}">{{ item.product.name }}</span>
+    <a class="text-primary info-btn" data-bs-toggle="modal" data-bs-target="#infoModal"><i class="bi bi-info-circle"></i></a>
+    {% if problem is defined %}<a id="cat-compat-{{ item.product.category.id }}" class="text-truncate text-bg-warning p-1 border border-dark rounded" data-bs-toggle="tooltip" data-bs-title="{{ problem }}" href="#"><i class="bi bi-exclamation-circle"></i></a>{% endif %}
+    <div>
+        {% for option in item.product.options %}
+            <span class="text-truncate border-end border-black pe-1">{{ option.optionName|capitalize }}: {% if option.optionValue is null %}N/A{% else %}{{ option.optionValue }}{% endif %}</span>
+        {% endfor %}
+    </div>
+</td>
+<td class="d-table-cell">{{ item.quantity }}</td>
+<td class="d-table-cell">{{ item.product.price }}</td>
+<td class="d-table-cell prod-select-actions" data-pid="{{ item.product.id }}"><a class="btn btn-danger del-btn" data-cid="{{ item.id }}"><i class="bi bi-trash-fill"></i></a></td>

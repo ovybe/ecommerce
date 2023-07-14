@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}PCStore{% endblock %}
+{% block title %}Hardware Trove{% endblock %}
 
 {% block navhome %}
 active
@@ -15,46 +15,43 @@ active
 {% block body %}
 <div class="container">
     <div class="row">
-        <div class="col-2">
+        <div class="col-12 col-md-2">
             <ul style="list-style: none;">
                 <li class="mb-2 p-1">
-                    <a class="text-body-emphasis text-decoration-none">Categorii</a>
+                    <h5 class="text-body-emphasis text-decoration-none">Categories</h5>
                 </li>
                 <li>
-                    <a href="{{ path('app_catalog',{value:'gpu'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Placi Video</a>
+                    <a href="{{ path('app_catalog',{value:'gpu'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">GPUs</a>
                 </li>
                 <li>
-                    <a href="{{ path('app_catalog',{value:'cpu'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Procesoare</a>
+                    <a href="{{ path('app_catalog',{value:'cpu'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">CPUs</a>
                 </li>
                 <li>
-                    <a href="{{ path('app_catalog',{value:'motherboard'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Placi de baza</a>
+                    <a href="{{ path('app_catalog',{value:'motherboard'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Motherboards</a>
                 </li>
                 <li>
-                    <a href="{{ path('app_catalog',{value:'memory'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Memorii</a>
+                    <a href="{{ path('app_catalog',{value:'memory'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Memories</a>
                 </li>
                 <li>
-                    <a href="{{ path('app_catalog',{value:'ssd'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">SSD</a>
+                    <a href="{{ path('app_catalog',{value:'ssd'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">SSDs</a>
                 </li>
                 <li>
-                    <a href="{{ path('app_catalog',{value:'ssd'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Hard disk-uri</a>
+                    <a href="{{ path('app_catalog',{value:'hdd'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">HDDs</a>
                 </li>
                 <li>
-                    <a href="{{ path('app_catalog',{value:'psu'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Surse</a>
+                    <a href="{{ path('app_catalog',{value:'psu'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">PSUs</a>
                 </li>
                 <li>
-                    <a href="{{ path('app_catalog',{value:'pccase'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Carcase</a>
+                    <a href="{{ path('app_catalog',{value:'pccase'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">PC Cases</a>
                 </li>
                 <li>
-                    <a href="{{ path('app_catalog',{value:'cooler'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Coolere</a>
-                </li>
-                <li>
-                    <a href="{{ path('app_catalog',{value:''}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Accesorii</a>
+                    <a href="{{ path('app_catalog',{value:'cooler'}) }}" class="bg-transparent text-body-emphasis text-decoration-none ms-1">Coolers</a>
                 </li>
             </ul>
         </div>
-        <div class="col-10">
+        <div class="col-12 col-md-10">
             <h4 class="text-body-emphasis">GPUs</h4>
-            {% for row in gpus|batch(4) %}
+            {% for row in products.1|batch(4) %}
                 <div class="row bg-transparent">
                     {% for gpu in row  %}
                         {% include 'element_templates/card.html.twig' with {'card': gpu} %}
@@ -62,7 +59,7 @@ active
                 </div>
             {% endfor %}
             <h4 class="text-body-emphasis">CPUs</h4>
-            {% for row in cpus|batch(4) %}
+            {% for row in products.2|batch(4) %}
                 <div class="row bg-transparent">
                     {% for cpu in row  %}
                         {% include 'element_templates/card.html.twig' with {'card': cpu} %}
@@ -70,7 +67,7 @@ active
                 </div>
             {% endfor %}
             <h4 class="text-body-emphasis">Motherboards</h4>
-            {% for row in mbs|batch(4) %}
+            {% for row in products.4|batch(4) %}
                 <div class="row bg-transparent">
                     {% for mb in row  %}
                         {% include 'element_templates/card.html.twig' with {'card': mb} %}
@@ -78,7 +75,7 @@ active
                 </div>
             {% endfor %}
             <h4 class="text-body-emphasis">RAM</h4>
-            {% for row in mems|batch(4) %}
+            {% for row in products.3|batch(4) %}
                 <div class="row bg-transparent">
                     {% for mem in row  %}
                         {% include 'element_templates/card.html.twig' with {'card': mem} %}
@@ -86,7 +83,7 @@ active
                 </div>
             {% endfor %}
             <h4 class="text-body-emphasis">SSDs</h4>
-            {% for row in ssds|batch(4) %}
+            {% for row in products.5|batch(4) %}
                 <div class="row bg-transparent">
                     {% for ssd in row  %}
                         {% include 'element_templates/card.html.twig' with {'card': ssd} %}
@@ -94,15 +91,15 @@ active
                 </div>
             {% endfor %}
             <h4 class="text-body-emphasis">Hard Disks</h4>
-            {% for row in hdds|batch(4) %}
+            {% for row in products.9|batch(4) %}
             <div class="row bg-transparent">
-                {% for ssd in row  %}
-                    {% include 'element_templates/card.html.twig' with {'card': ssd} %}
+                {% for hdd in row  %}
+                    {% include 'element_templates/card.html.twig' with {'card': hdd} %}
                 {% endfor %}
             </div>
             {% endfor %}
             <h4 class="text-body-emphasis">PSUs</h4>
-            {% for row in psus|batch(4) %}
+            {% for row in products.6|batch(4) %}
             <div class="row bg-transparent">
                 {% for psu in row  %}
                     {% include 'element_templates/card.html.twig' with {'card': psu} %}
@@ -110,7 +107,7 @@ active
             </div>
             {% endfor %}
             <h4 class="text-body-emphasis">PC Cases</h4>
-            {% for row in cases|batch(4) %}
+            {% for row in products.7|batch(4) %}
             <div class="row bg-transparent">
                 {% for case in row  %}
                     {% include 'element_templates/card.html.twig' with {'card': case} %}
@@ -118,7 +115,7 @@ active
             </div>
             {% endfor %}
             <h4 class="text-body-emphasis">Coolers</h4>
-            {% for row in coolers|batch(4) %}
+            {% for row in products.8|batch(4) %}
             <div class="row bg-transparent">
                 {% for cooler in row  %}
                     {% include 'element_templates/card.html.twig' with {'card': cooler} %}

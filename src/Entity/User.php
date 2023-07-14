@@ -58,10 +58,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Countries $country = null;
 
+    #[ORM\OneToMany(mappedBy: 'owningUser', targetEntity: PCBuilderTemplate::class, orphanRemoval: true)]
+    private Collection $pcBuilderTemplates;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
         $this->paymentDetails = new ArrayCollection();
+        $this->pcBuilderTemplates = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -123,6 +127,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
 
         return $this;
+    }
+    public function isAdmin():bool{
+        return in_array('ROLE_ADMIN',$this->roles);
+    }
+    public function isSuspended():bool{
+        return in_array('ROLE_SUSPENDED',$this->roles);
     }
 
     /**
@@ -284,6 +294,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCountry(?Countries $country): self
     {
         $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PCBuilderTemplate>
+     */
+    public function getPcBuilderTemplates(): Collection
+    {
+        return $this->pcBuilderTemplates;
+    }
+
+    public function addPcBuilderTemplate(PCBuilderTemplate $pcBuilderTemplate): self
+    {
+        if (!$this->pcBuilderTemplates->contains($pcBuilderTemplate)) {
+            $this->pcBuilderTemplates->add($pcBuilderTemplate);
+            $pcBuilderTemplate->setOwningUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePcBuilderTemplate(PCBuilderTemplate $pcBuilderTemplate): self
+    {
+        if ($this->pcBuilderTemplates->removeElement($pcBuilderTemplate)) {
+            // set the owning side to null (unless already changed)
+            if ($pcBuilderTemplate->getOwningUser() === $this) {
+                $pcBuilderTemplate->setOwningUser(null);
+            }
+        }
 
         return $this;
     }

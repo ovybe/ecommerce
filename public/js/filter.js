@@ -1,9 +1,10 @@
 var filters={};
-const cat = $('#filterh').data('cat');
 $('.filter').on('change', function(event) {
     //console.log();
     var filter_val=$(this).parent().find('.filter_val').text()
     var filter_col=$(this).data('col')
+    var search_val=$("#filterh").data('v');
+    var search_fun=$("#filterh").data("f");
     if(!$(this).is(":checked")){
         if(filter_col in filters){
             if(filters[filter_col].indexOf(filter_val)>-1){
@@ -37,9 +38,11 @@ $('.filter').on('change', function(event) {
     $.ajax({
         url: '/apply_filter/',
         data: {filter_array:filters,
-               category:cat},
+               function:search_fun,
+               value:search_val},
         type: 'POST',
         success: function(data) {
+            console.log(data);
             $('#prod-list').html(data);
         }
     });

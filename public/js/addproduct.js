@@ -1,9 +1,12 @@
 var prevValue;
 $(document).ready(function() {
     // you may need to change this code if you are not using Bootstrap Datepicker
-    var typeSelect=$("select#add_product_product_type");
-    if($("option:selected",typeSelect).value!==null)
+
+    var typeSelect=$("select#add_product_type");
+    var selectedValue=$("option:selected",typeSelect).value;
+    if(!selectedValue==null && $("#formdiv").find("#"+selectedValue)!==undefined)
     {
+        // TODO: form shouldn't have extra fields
         $(typeSelect).trigger("change");
     }
     $('.js-datepicker').datepicker({
@@ -11,11 +14,26 @@ $(document).ready(function() {
     });
 });
 
-$("select#add_product_product_type").on('change', function () {
+$("select#add_product_type").on('change', function () {
     var optionSelected = $("option:selected", this);
+    //console.log(optionSelected);
     var valueSelected = this.value;
-    $("#"+prevValue).css("display","none");
-    $("#"+valueSelected).show();
+    var formType= $("#container").data('type')
+    // $("#"+prevValue).css("display","none");
+    // $("#"+valueSelected).show();
+    $.ajax({
+        url: '/admin/render_subform',
+        type: 'POST',
+        data: {
+            type:valueSelected,
+            add_or_edit:formType,
+        },
+        success: function(data) {
+            console.log(data);
+            $("#formdiv").html(data);
+
+        }
+    });
     prevValue=this.value;
 });
 $("span#addloc").on('click', function () {
@@ -70,7 +88,7 @@ var quillShort = new Quill('#editor2', {
 $( "form" ).submit(function( event ) {
     // event.preventDefault();
     $("#add_product_product_description").val(quill.root.innerHTML);
-    $("#add_product_product_shortDesc").val(quill.root.innerHTML);
+    $("#add_product_product_shortDesc").val(quillShort.root.innerHTML);
     console.log($("#add_product_product_description").val());
     // return
 });
@@ -92,5 +110,6 @@ const addFormToCollection = (e) => {
 
     collectionHolder.dataset.index++;
 };
+
 
 $(".add_item_link").on('click',addFormToCollection);

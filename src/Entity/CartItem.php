@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CartItemRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CartItemRepository::class)]
@@ -21,9 +23,15 @@ class CartItem
     private ?int $quantity = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Order $assocOrder = null;
 
+    #[ORM\ManyToMany(targetEntity: PCBuilderTemplate::class, mappedBy: 'cartItems')]
+    private Collection $pcBuilderTemplates;
+
+    public function __construct(){
+        $this->pcBuilderTemplates = new ArrayCollection();
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -84,6 +92,49 @@ class CartItem
     {
         return $this->getProduct()->getPrice() * $this->getQuantity();
     }
+    /**
+     * Calculates the consumption total.
+     *
+     * @return float|int
+     */
+    public function getConsumptionTotal(): float
+    {
+        $consumptionName='consumption';
+        $consumptionTotal=0;
+        foreach($this->getProduct()->getOptions() as $option){
+            if($option->getOptionName()==$consumptionName){
+                $consumptionTotal+=$option->getOptionValue();
+                break;
+            }
+        }
+        return $consumptionTotal;
+    }
 
+    /**
+     * @return Collection<int, PCBuilderTemplate>
+     */
+    public function getPCBuilderTemplates(): Collection
+    {
+        return $this->pcBuilderTemplates;
+    }
+
+    public function addPCBuilderTemplate(PCBuilderTemplate $pCBuilderTemplate): self
+    {
+        if (!$this->pcBuilderTemplates->contains($pCBuilderTemplate)) {
+            $this->pcBuilderTemplates->add($pCBuilderTemplate);
+            $pCBuilderTemplate->addProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removePCBuilderTemplate(PCBuilderTemplate $pCBuilderTemplate): self
+    {
+        if ($this->pcBuilderTemplates->removeElement($pCBuilderTemplate)) {
+            $pCBuilderTemplate->removeProduct($this);
+        }
+
+        return $this;
+    }
 
 }
